@@ -1,0 +1,18 @@
+# simple example
+
+.DS_Store
+thumbs.db
+*.log
+*.tmp
+*.bak
+*.zip
+*.rar
+log/*.log
+log/*.log[0-9]
+assets/photoshop/
+assets/videos/
+!assets/videos/tours_*.mp4
+access.log
+db_config.txt
+alan.txt
+desktop.ini
