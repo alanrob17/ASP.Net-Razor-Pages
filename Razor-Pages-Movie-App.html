@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Razor-Pages-Movie-App.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="get-started-with-razor-pages-in-aspnet-core">Get started with Razor Pages in ASP.NET Core</h1>
+<h2 id="create-an-aspnet-core-webapp">Create an ASP.Net Core WebApp</h2>
+<p>In this process there are two checkbox options.</p>
+<p>Configure for https: - Check this.</p>
+<p>Do not use top-level statements: - Check this.</p>
+<p>This option will allow you to use a Namespace and Class structure in your C# files.</p>
+<p>This file structure is created.</p>
+<p><img src="assets/images/solution-structure.jpg" alt="solution-structure" title="solution-structure"></p>
+<p>You can run the application with <code>CTRL-F5</code>.</p>
+<p>Visual Studio:</p>
+<p>Runs the app, which launches the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-6.0">Kestrel server</a>.</p>
+<p>Launches the default browser at <a href="https://localhost:7184/">https://localhost:7184/</a>, which displays the apps UI.</p>
+<h3 id="pages-folder">Pages folder</h3>
+<p>Contains Razor pages and supporting files. Each Razor page is a pair of files:</p>
+<p>A .cshtml file that has HTML markup with C# code using Razor syntax.</p>
+<p>A .cshtml.cs file that has C# code that handles page events.</p>
+<p>Supporting files have names that begin with an underscore. For example, the <em>_Layout.cshtml</em> file configures UI elements common to all  pages. This file sets up the navigation menu at the top of the page and the copyright notice at the bottom of the page. For more information, see <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0">Layout in ASP.NET Core</a>.</p>
+<h3 id="wwwroot-folder">wwwroot folder</h3>
+<p>Contains static assets, like HTML files, JavaScript files, and CSS files. For more information, see <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-6.0">Static files in ASP.NET Core</a>.</p>
+<h3 id="appsettingsjson">appsettings.json</h3>
+<p>Contains configuration data, like connection strings. For more information, see <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0">Configuration in ASP.NET Core</a>.</p>
+<h3 id="programcs">Program.cs</h3>
+<p>Contains the following code:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+    <span class="hljs-comment">// Add services to the container.</span>
+    builder.Services.AddRazorPages();
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+
+    <span class="hljs-comment">// Configure the HTTP request pipeline.</span>
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        <span class="hljs-comment">// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.</span>
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+</div></code></pre>
+<p>The following lines of code in this file create a <code>WebApplicationBuilder</code> with preconfigured defaults, add Razor Pages support to the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-6.0">Dependency Injection (DI) container</a>, and build the app:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+    <span class="hljs-comment">// Add services to the container.</span>
+    builder.Services.AddRazorPages();
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+</div></code></pre>
+<p>The developer exception page is enabled by default and provides helpful information on exceptions. Production apps should not be run in development mode because the developer exception page can leak sensitive information.</p>
+<p>The following code sets the exception endpoint to /Error and enables <a href="https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-6.0#http-strict-transport-security-protocol-hsts">HTTP Strict Transport Security Protocol (HSTS)</a> when the app is not running in development mode:</p>
+<pre class="hljs"><code><div>    <span class="hljs-comment">// Configure the HTTP request pipeline.</span>
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        <span class="hljs-comment">// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.</span>
+        app.UseHsts();
+    }
+</div></code></pre>
+<p>For example, the preceding code runs when the app is in production or test mode. For more information, see <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-6.0">Use multiple environments in ASP.NET Core</a>.</p>
+<p>The following code enables various Middleware:</p>
+<p><code>app.UseHttpsRedirection();</code> : Redirects HTTP requests to HTTPS.</p>
+<p><code>app.UseStaticFiles();</code> : Enables static files, such as HTML, CSS, images, and JavaScript to be served. For more information, see Static files in ASP.NET Core.</p>
+<p><code>app.UseRouting();</code> : Adds route matching to the middleware pipeline. For more information, see Routing in ASP.NET Core</p>
+<p><code>app.MapRazorPages();Z</code> : Configures endpoint routing for Razor Pages.</p>
+<p><code>app.UseAuthorization();</code> : Authorizes a user to access secure resources. This app doesn't use authorization, therefore this line could be removed.</p>
+<p><code>app.Run();</code> : Runs the app.</p>
+<h2 id="add-a-model-to-a-razor-pages-app-in-aspnet-core">Add a model to a Razor Pages app in ASP.NET Core</h2>
+<p>In this tutorial, classes are added for managing movies in a database. The app's model classes use <a href="https://docs.microsoft.com/en-us/ef/core">Entity Framework Core (EF Core)</a> to work with the database. EF Core is an object-relational mapper (O/RM) that simplifies data access. You write the model classes first, and EF Core creates the database.</p>
+<p>The model classes are known as <strong>POCO</strong> classes (from &quot;Plain-Old CLR Objects&quot;) because they don't have a dependency on EF Core. They define the properties of the data that are stored in the database.</p>
+<h3 id="add-a-data-model">Add a data model</h3>
+<p>Create a new folder on the root of your project named <strong>Models</strong> and add a new class named <strong>Movie</strong>.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> System.ComponentModel.DataAnnotations;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesMovie.Models</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Movie</span>
+        {
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> ID { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Title { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-keyword">string</span>.Empty;
+
+            [<span class="hljs-meta">DataType(DataType.Date)</span>]
+            <span class="hljs-keyword">public</span> DateTime ReleaseDate { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Genre { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-keyword">string</span>.Empty;
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">decimal</span> Price { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+        }
+    }
+</div></code></pre>
+<p>We are using data annotations for the <strong>ReleaseDate</strong> property to set the data type. By adding this the user doesn't have to enter Time information in the date field and only the date is shown, not the time information.</p>
+<p>Build the project to make sure there are no errors.</p>
+<h3 id="scaffold-the-movie-model">Scaffold the movie model</h3>
+<p>In this section, the movie model is scaffolded. That is, the scaffolding tool produces pages for Create, Read, Update, and Delete (CRUD) operations for the movie model.</p>
+<ol>
+<li>Open NuGet package manager and browse to <strong>Microsoft.EntityFrameworkCore.Design</strong> and add it to your project.</li>
+<li>Create the <strong>Pages/Movies</strong> folder.</li>
+<li>Right-click on the <strong>Pages/Movies</strong> folder &gt; <strong>Add &gt; New Scaffolded Item</strong>.</li>
+<li>In the Add New Scaffold dialog, select Razor Pages using Entity Framework (CRUD) &gt; <strong>Add</strong>.</li>
+</ol>
+<p><img src="assets/images/db-context.jpg" alt="db-context" title="db-context"></p>
+<p><strong>Model class</strong>: Movie (RazorPagesMovie.Models)<br>
+<strong>Data context class</strong>: RazorPagesMovie.Data.RazorPagesMovieContext</p>
+<p>The <code>appsettings.json</code> file is updated with the connection string used to connect to a local database.</p>
+<h3 id="files-created-and-updated">Files created and updated</h3>
+<p>The scaffold process creates the following files:</p>
+<p>Pages/Movies: Create, Delete, Details, Edit, and Index.</p>
+<p>Data/RazorPagesMovieContext.cs</p>
+<p>The scaffold process updates the <strong>Program.cs</strong> file.</p>
+<h4 id="using-statements">using statements</h4>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Data;
+</div></code></pre>
+<h4 id="db-context">db context</h4>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+        
+        <span class="hljs-comment">// Adds this db context</span>
+        builder.Services.AddDbContext&lt;RazorPagesMovieContext&gt;(options =&gt;
+            options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="hljs-string">"RazorPagesMovieContext"</span>) ?? <span class="hljs-keyword">throw</span> newInvalidOperationException(<span class="hljs-string">"Connection string 'RazorPagesMovieContext' not found."</span>)));
+</div></code></pre>
+<h2 id="create-the-initial-database-schema-using-efs-migration-feature">Create the initial database schema using EF's migration feature</h2>
+<p>The migrations feature in Entity Framework Core provides a way to:</p>
+<ul>
+<li>Create the initial database schema.</li>
+<li>Incrementally update the database schema to keep it in sync with the app's data model. Existing data in the database is preserved.</li>
+</ul>
+<p>Open the NuGet Package Manager console</p>
+<p>In the PMC, enter the following commands:</p>
+<pre class="hljs"><code><div>    <span class="hljs-built_in">Add-Migration</span> InitialCreate
+    <span class="hljs-built_in">Update-Database</span>
+</div></code></pre>
+<p>The preceding commands install the <a href="https://docs.microsoft.com/en-us/ef/core/get-started/overview/install#get-the-entity-framework-core-tools">Entity Framework Core</a> tools and run the migrations command to generate code that creates the initial database schema.</p>
+<p>The following warning is displayed, which is addressed in a later step:</p>
+<blockquote>
+<p>No type was specified for the decimal column 'Price' on entity type 'Movie'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.</p>
+</blockquote>
+<p>The <code>migrations</code> command generates code to create the initial database schema. The schema is based on the model specified in <code>DbContext</code>. The <code>InitialCreate</code> argument is used to name the migrations. Any name can be used, but by convention a name is selected that describes the migration.</p>
+<p>The <code>update</code> command runs the <code>Up</code> method in migrations that have not been applied. In this case, <code>update</code> runs the <code>Up</code> method in the <code>Migrations/&lt;time-stamp&gt;_InitialCreate.cs</code> file, which creates the database.</p>
+<h3 id="examine-the-context-registered-with-dependency-injection">Examine the context registered with dependency injection</h3>
+<p>ASP.NET Core is built with dependency injection. Services, such as the EF Core database context, are registered with <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-6.0">dependency injection</a> during application startup. Components that require these services (such as Razor Pages) are provided via constructor parameters. The constructor code that gets a database context instance is shown later in the tutorial.</p>
+<p>The scaffolding tool automatically created a database context and registered it with the dependency injection container. The following highlighted code is added to the <code>Program.cs</code> file by the scaffolder:</p>
+<pre class="hljs"><code><div>    builder.Services.AddDbContext&lt;RazorPagesMovieContext&gt;(options =&gt;
+            options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="hljs-string">"RazorPagesMovieContext"</span>) ?? <span class="hljs-keyword">throw</span> newInvalidOperationException(<span class="hljs-string">"Connection string 'RazorPagesMovieContext' not found."</span>)));
+</div></code></pre>
+<p>The data context <code>RazorPagesMovieContext</code>:</p>
+<ul>
+<li>Derives from <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext">Microsoft.EntityFrameworkCore.DbContext</a>.</li>
+<li>Specifies which entities are included in the data model.</li>
+<li>Coordinates EF Core functionality, such as Create, Read, Update and Delete, for the <code>Movie</code> model.</li>
+</ul>
+<h4 id="datarazorpagesmoviecontextcs">Data/RazorPagesMovieContext.cs</h4>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> System;
+    <span class="hljs-keyword">using</span> System.Collections.Generic;
+    <span class="hljs-keyword">using</span> System.Linq;
+    <span class="hljs-keyword">using</span> System.Threading.Tasks;
+    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Models;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesMovie.Data</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">RazorPagesMovieContext</span> : <span class="hljs-title">DbContext</span>
+        {
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RazorPagesMovieContext</span> (<span class="hljs-params">DbContextOptions&lt;RazorPagesMovieContext&gt; options</span>)
+                : <span class="hljs-title">base</span>(<span class="hljs-params">options</span>)</span>
+            {
+            }
+
+            <span class="hljs-keyword">public</span> DbSet&lt;RazorPagesMovie.Models.Movie&gt; Movie { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+        }
+    }
+</div></code></pre>
+
+</body>
+</html>
