@@ -4,6 +4,7 @@
         "HSTS",
         "Linq",
         "preconfigured",
-        "scaffolder"
+        "scaffolder",
+        "SSOX"
     ]
 }

@@ -366,6 +366,7 @@ code {
     });
   </script>
 <h1 id="get-started-with-razor-pages-in-aspnet-core">Get started with Razor Pages in ASP.NET Core</h1>
+<p>App source code: <code>Sandbox\RazorPagesMovie</code></p>
 <h2 id="create-an-aspnet-core-webapp">Create an ASP.Net Core WebApp</h2>
 <p>In this process there are two checkbox options.</p>
 <p>Configure for https: - Check this.</p>
@@ -504,6 +505,7 @@ code {
 <pre class="hljs"><code><div>    <span class="hljs-built_in">Add-Migration</span> InitialCreate
     <span class="hljs-built_in">Update-Database</span>
 </div></code></pre>
+<p><strong>Note:</strong> the <code>RazorPagesMovie.Data.mdf</code> database is stored in my <em>Users\alanr</em> folder.</p>
 <p>The preceding commands install the <a href="https://docs.microsoft.com/en-us/ef/core/get-started/overview/install#get-the-entity-framework-core-tools">Entity Framework Core</a> tools and run the migrations command to generate code that creates the initial database schema.</p>
 <p>The following warning is displayed, which is addressed in a later step:</p>
 <blockquote>
@@ -544,6 +546,519 @@ code {
         }
     }
 </div></code></pre>
+<p>The preceding code creates a <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet<Movie></a> property for the entity set. In Entity Framework terminology, an entity set typically corresponds to a database table. An entity corresponds to a row in the table.</p>
+<p>The name of the connection string is passed in to the context by calling a method on a <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontextoptions">DbContextOptions</a> object. For local development, the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0">Configuration system</a> reads the connection string from the <code>appsettings.json</code> file.</p>
+<h2 id="build-the-app">Build the App</h2>
+<p>Build the app. The compiler generates several nullable warnings.</p>
+<p><strong>Note:</strong> In .Net 6.0 the nullable types are automatically enabled so I don't see these errors.</p>
+<p>Fix the warning messages</p>
+<p>In this section, you can either disable nullable warnings or fix the scaffolded code. To eliminate the warnings from nullable reference types, remove the following line from the <code>RazorPagesMovie.csproj</code> file:</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">Nullable</span>&gt;</span>enable<span class="hljs-tag">&lt;/<span class="hljs-name">Nullable</span>&gt;</span>
+</div></code></pre>
+<p>Rather than do this you should fix the scaffold code.</p>
+<h3 id="razorpagesmoviecontextcs">RazorPagesMovieContext.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">public</span> DbSet&lt;RazorPagesMovie.Models.Movie&gt;? Movie { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+</div></code></pre>
+<p>We add the nullable after <code>DbSet&lt;&gt;</code>. This has been done for us in .Net 6.0.</p>
+<h2 id="scaffolded-razor-pages-in-aspnet-core">Scaffolded Razor Pages in ASP.NET core</h2>
+<p>We now examine the Razor Pages created by scaffolding in the previous tutorial.</p>
+<h3 id="pagesmoviesindexcshtmlcs">Pages/Movies/Index.cshtml.cs</h3>
+<p>This is the Index page Model.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Models;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesMovie.Pages.Movies</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">IndexModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> RazorPagesMovie.Data.RazorPagesMovieContext _context;
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">IndexModel</span>(<span class="hljs-params">RazorPagesMovie.Data.RazorPagesMovieContext context</span>)</span>
+            {
+                _context = context;
+            }
+
+            <span class="hljs-keyword">public</span> IList&lt;Movie&gt; Movie { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">OnGetAsync</span>(<span class="hljs-params"></span>)</span>
+            {
+                Movie = <span class="hljs-keyword">await</span> _context.Movie.ToListAsync();
+            }
+        }
+    }
+</div></code></pre>
+<p>Razor Pages are derived from <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pagemodel">PageModel</a>. By convention, the <code>PageModel</code> derived class is named <code>PageNameModel</code>. For example, the Index page is named <code>IndexModel</code>.</p>
+<p>The constructor uses <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-6.0">dependency injection</a> to add the <code>RazorPagesMovieContext</code> to the page:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">IndexModel</span> : <span class="hljs-title">PageModel</span>
+    {
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> RazorPagesMovie.Data.RazorPagesMovieContext _context;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">IndexModel</span>(<span class="hljs-params">RazorPagesMovie.Data.RazorPagesMovieContext context</span>)</span>
+        {
+            _context = context;
+        }
+        ...
+    }
+</div></code></pre>
+<p>When a request is made for the page, the <code>OnGetAsync</code> method returns a list of movies to the Razor Page. On a Razor Page, <code>OnGetAsync</code> or <code>OnGet</code> is called to initialize the state of the page. In this case, <code>OnGetAsync</code> gets a list of movies and displays them.</p>
+<p>See <a href="https://docs.microsoft.com/en-us/aspnet/core/data/ef-rp/intro?view=aspnetcore-6.0#asynchronous-code">Asynchronous code</a> for more information on asynchronous programming with Entity Framework.</p>
+<p>When <code>OnGet</code> returns <code>void</code> or <code>OnGetAsync</code> returns <code>Task</code>, no return statement is used. For example, examine the Privacy Page:</p>
+<h4 id="privacycshtmlcs">Privacy.cshtml.cs</h4>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesMovie.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PrivacyModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> ILogger&lt;PrivacyModel&gt; _logger;
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">PrivacyModel</span>(<span class="hljs-params">ILogger&lt;PrivacyModel&gt; logger</span>)</span>
+            {
+                _logger = logger;
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+            }
+        }
+    }
+</div></code></pre>
+<p>When the return type is <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a> or Task<IActionResult>, a return statement must be provided. For example, the <code>Pages/Movies/Create.cshtml.cs</code> <code>OnPostAsync</code> method:</p>
+<h4 id="pagesmoviescreatecshtmlcs">Pages/Movies/Create.cshtml.cs</h4>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostAsync</span>(<span class="hljs-params"></span>)</span>
+    {
+        <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+        {
+            <span class="hljs-keyword">return</span> Page();
+        }
+
+        _context.Movie.Add(Movie);
+        <span class="hljs-keyword">await</span> _context.SaveChangesAsync();
+
+        <span class="hljs-keyword">return</span> RedirectToPage(<span class="hljs-string">"./Index"</span>);
+    }
+</div></code></pre>
+<p>Examine the <code>Pages/Movies/Index.cshtml</code> Razor Page:</p>
+<h4 id="pagesmoviesindexcshtml">Pages/Movies/Index.cshtml</h4>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesMovie.Pages.Movies.IndexModel
+
+    @{
+        ViewData[<span class="hljs-string">"Title"</span>] = <span class="hljs-string">"Index"</span>;
+    }
+
+    &lt;h1&gt;Index&lt;/h1&gt;
+
+    &lt;p&gt;
+        &lt;a asp-page=<span class="hljs-string">"Create"</span>&gt;Create New&lt;/a&gt;
+    &lt;/p&gt;
+    &lt;table <span class="hljs-keyword">class</span>=<span class="hljs-string">"table"</span>&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;
+                    @Html.DisplayNameFor(model =&gt; model.Movie[<span class="hljs-number">0</span>].Title)
+                &lt;/th&gt;
+                &lt;th&gt;
+                    @Html.DisplayNameFor(model =&gt; model.Movie[<span class="hljs-number">0</span>].ReleaseDate)
+                &lt;/th&gt;
+                &lt;th&gt;
+                    @Html.DisplayNameFor(model =&gt; model.Movie[<span class="hljs-number">0</span>].Genre)
+                &lt;/th&gt;
+                &lt;th&gt;
+                    @Html.DisplayNameFor(model =&gt; model.Movie[<span class="hljs-number">0</span>].Price)
+                &lt;/th&gt;
+                &lt;th&gt;&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+    @<span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> item <span class="hljs-keyword">in</span> Model.Movie) {
+            &lt;tr&gt;
+                &lt;td&gt;
+                    @Html.DisplayFor(modelItem =&gt; item.Title)
+                &lt;/td&gt;
+                &lt;td&gt;
+                    @Html.DisplayFor(modelItem =&gt; item.ReleaseDate)
+                &lt;/td&gt;
+                &lt;td&gt;
+                    @Html.DisplayFor(modelItem =&gt; item.Genre)
+                &lt;/td&gt;
+                &lt;td&gt;
+                    @Html.DisplayFor(modelItem =&gt; item.Price)
+                &lt;/td&gt;
+                &lt;td&gt;
+                    &lt;a asp-page=<span class="hljs-string">"./Edit"</span> asp-route-id=<span class="hljs-string">"@item.ID"</span>&gt;Edit&lt;/a&gt; |
+                    &lt;a asp-page=<span class="hljs-string">"./Details"</span> asp-route-id=<span class="hljs-string">"@item.ID"</span>&gt;Details&lt;/a&gt; |
+                    &lt;a asp-page=<span class="hljs-string">"./Delete"</span> asp-route-id=<span class="hljs-string">"@item.ID"</span>&gt;Delete&lt;/a&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+    }
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+</div></code></pre>
+<p>Razor can transition from HTML into C# or into Razor-specific markup. When an @ symbol is followed by a Razor reserved keyword, it transitions into <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-6.0#razor-reserved-keywords">Razor-specific markup</a>, otherwise it transitions into C#.</p>
+<h3 id="the-page-directive">The @page directive</h3>
+<p>The <code>@page</code> Razor directive makes the file an MVC action, which means that it can handle requests. <code>@page</code> must be the first Razor directive on a page. <code>@page</code> and <code>@model</code> are examples of transitioning into Razor-specific markup. See <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-6.0#razor-syntax">Razor syntax</a> for more information.</p>
+<h3 id="the-model-directive">The @model directive</h3>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesMovie.Pages.Movies.IndexModel
+</div></code></pre>
+<p>The <code>@model</code> directive specifies the type of the model passed to the Razor Page. In the preceding example, the <code>@model</code> line makes the <code>PageModel</code> derived class available to the Razor Page. The model is used in the <code>@Html.DisplayNameFor</code> and <code>@Html.DisplayFor</code> <a href="https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/views/creating-custom-html-helpers-cs#understanding-html-helpers">HTML Helpers</a> on the page.</p>
+<p>Examine the lambda expression used in the following HTML Helper:</p>
+<pre class="hljs"><code><div>    @Html.DisplayNameFor(model =&gt; model.Movie[<span class="hljs-number">0</span>].Title)
+</div></code></pre>
+<p>The <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.rendering.ihtmlhelper-1.displaynamefor">DisplayNameFor</a> HTML Helper inspects the <code>Title</code> property referenced in the lambda expression to determine the display name. The lambda expression is inspected rather than evaluated. That means there is no access violation when <code>model</code>, <code>model.Movie</code>, or <code>model.Movie[0]</code> is null or empty. When the lambda expression is evaluated, for example, with <code>@Html.DisplayFor(modelItem =&gt; item.Title)</code>, the model's property values are evaluated.</p>
+<h3 id="the-layout-page">The layout page</h3>
+<p>Select the menu links <strong>RazorPagesMovie</strong>, <strong>Home</strong>, and <strong>Privacy</strong>. Each page shows the same menu layout. The menu layout is implemented in the <code>Pages/Shared/_Layout.cshtml</code> file.</p>
+<p>Open and examine the <code>Pages/Shared/_Layout.cshtml</code> file.</p>
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout?view=aspnetcore-6.0">Layout templates</a> allow the HTML container layout to be:</p>
+<ul>
+<li>Specified in one place.</li>
+<li>Applied in multiple pages in the site.</li>
+</ul>
+<p>Find the <code>@RenderBody()</code> line. <code>RenderBody</code> is a placeholder where all the page-specific views show up, <em>wrapped</em> in the layout page. For example, select the Privacy link and the <code>Pages/Privacy.cshtml</code> view is rendered inside the <code>RenderBody</code> method.</p>
+<h3 id="viewdata-and-layout">ViewData and layout</h3>
+<p>Consider the following markup from the <code>Pages/Movies/Index.cshtml</code> file:</p>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesMovie.Pages.Movies.IndexModel
+
+    @{
+        ViewData[<span class="hljs-string">"Title"</span>] = <span class="hljs-string">"Index"</span>;
+    }
+</div></code></pre>
+<p>The preceding highlighted markup is an example of Razor transitioning into C#. The <code>{</code> and <code>}</code> characters enclose a block of C# code.</p>
+<p>The <code>PageModel</code> base class contains a <code>ViewData</code> dictionary property that can be used to pass data to a View. Objects are added to the <code>ViewData</code> dictionary using a <strong>key value</strong> pattern. In the preceding sample, the Title property is added to the <code>ViewData</code> dictionary.</p>
+<h2 id="update-the-layout">Update the layout</h2>
+<p>The <code>Title</code> property is used in the <code>Pages/Shared/_Layout.cshtml</code> file. The following markup shows the first few lines of the <code>_Layout.cshtml</code> file.</p>
+<pre class="hljs"><code><div>    <span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width, initial-scale=1.0"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>@ViewData["Title"] - Movie<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"~/lib/bootstrap/dist/css/bootstrap.css"</span> /&gt;</span>
+</div></code></pre>
+<p>Find the following anchor element in the <code>Pages/Shared/_Layout.cshtml</code> file.</p>
+<pre class="hljs"><code><div>    &lt;a <span class="hljs-keyword">class</span>=<span class="hljs-string">"navbar-brand"</span> asp-area=<span class="hljs-string">""</span> asp-page=<span class="hljs-string">"/Index"</span>&gt;RazorPagesMovie&lt;/a&gt;
+</div></code></pre>
+<p>Change to.</p>
+<pre class="hljs"><code><div>    &lt;a <span class="hljs-keyword">class</span>=<span class="hljs-string">"navbar-brand"</span> asp-page=<span class="hljs-string">"/Movies/Index"</span>&gt;RpMovie&lt;/a&gt;
+</div></code></pre>
+<p>When you click on this link.</p>
+<p><img src="assets/images/movies-list.jpg" alt="Movies list" title="Movies list"></p>
+<p>The preceding anchor element is a <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-6.0">Tag Helper</a>. In this case, it's the <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/built-in/anchor-tag-helper?view=aspnetcore-6.0">Anchor Tag Helper</a>. The <code>asp-page=&quot;/Movies/Index&quot;</code> Tag Helper attribute and value creates a link to the <code>/Movies/Index Razor Page</code>. The <code>asp-area</code> attribute value is empty, so the area isn't used in the link. See <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas?view=aspnetcore-6.0">Areas</a> for more information.</p>
+<p>The <code>Layout</code> property is set in the <code>Pages/_ViewStart.cshtml</code> file:</p>
+<pre class="hljs"><code><div>    @{
+        Layout = <span class="hljs-string">"_Layout"</span>;
+    }
+</div></code></pre>
+<p>The preceding markup sets the layout file to <code>Pages/Shared/_Layout.cshtml</code> for all Razor files under the <em>Pages</em> folder. See <a href="https://docs.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-6.0#layout">Layout</a> for more information.</p>
+<h2 id="the-create-page-model">The Create page model</h2>
+<p>Examine the <code>Pages/Movies/Create.cshtml.cs</code> page model:</p>
+<h3 id="createcshtmlcs">Create.cshtml.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> System;
+    <span class="hljs-keyword">using</span> System.Collections.Generic;
+    <span class="hljs-keyword">using</span> System.Linq;
+    <span class="hljs-keyword">using</span> System.Threading.Tasks;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.Rendering;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Data;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Models;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesMovie.Pages.Movies</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">CreateModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> RazorPagesMovie.Data.RazorPagesMovieContext _context;
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CreateModel</span>(<span class="hljs-params">RazorPagesMovie.Data.RazorPagesMovieContext context</span>)</span>
+            {
+                _context = context;
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+                <span class="hljs-keyword">return</span> Page();
+            }
+
+            [<span class="hljs-meta">BindProperty</span>]
+            <span class="hljs-keyword">public</span> Movie Movie { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-keyword">default</span>!;
+
+
+            <span class="hljs-comment">// To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD</span>
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostAsync</span>(<span class="hljs-params"></span>)</span>
+            {
+              <span class="hljs-keyword">if</span> (!ModelState.IsValid || _context.Movie == <span class="hljs-literal">null</span> || Movie == <span class="hljs-literal">null</span>)
+                {
+                    <span class="hljs-keyword">return</span> Page();
+                }
+
+                _context.Movie.Add(Movie);
+                <span class="hljs-keyword">await</span> _context.SaveChangesAsync();
+
+                <span class="hljs-keyword">return</span> RedirectToPage(<span class="hljs-string">"./Index"</span>);
+            }
+        }
+    }
+</div></code></pre>
+<p>The <code>OnGet</code> method initializes any state needed for the page. The Create page doesn't have any state to initialize, so <code>Page</code> is returned. Later in the tutorial, an example of <code>OnGet</code> initializing state is shown. The <code>Page</code> method creates a <code>PageResult</code> object that renders the <code>Create.cshtml</code> page.</p>
+<p>The <code>Movie</code> property uses the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.bindpropertyattribute">[BindProperty]</a> attribute to opt-in to <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/models/model-binding?view=aspnetcore-6.0">model binding</a>. When the Create form posts the form values, the ASP.NET Core runtime binds the posted values to the <code>Movie</code> model.</p>
+<p>The <code>OnPostAsync</code> method is run when the page posts form data:</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostAsync</span>(<span class="hljs-params"></span>)</span>
+    {
+      <span class="hljs-keyword">if</span> (!ModelState.IsValid || _context.Movie == <span class="hljs-literal">null</span> || Movie == <span class="hljs-literal">null</span>)
+        {
+            <span class="hljs-keyword">return</span> Page();
+        }
+        _context.Movie.Add(Movie);
+        <span class="hljs-keyword">await</span> _context.SaveChangesAsync();
+        <span class="hljs-keyword">return</span> RedirectToPage(<span class="hljs-string">"./Index"</span>);
+    }
+</div></code></pre>
+<p>If there are any model errors, the form is redisplayed, along with any form data posted. Most model errors can be caught on the client-side before the form is posted. An example of a model error is posting a value for the date field that cannot be converted to a date. Client-side validation and model validation are discussed later in the tutorial.</p>
+<p>If there are no model errors:</p>
+<ul>
+<li>The data is saved.</li>
+<li>The browser is redirected to the Index page.</li>
+</ul>
+<h2 id="the-create-razor-page">The Create Razor Page</h2>
+<h3 id="pagesmoviescreatecshtml">Pages/Movies/Create.cshtml</h3>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesMovie.Pages.Movies.CreateModel
+
+    @{
+        ViewData[<span class="hljs-string">"Title"</span>] = <span class="hljs-string">"Create"</span>;
+    }
+
+    &lt;h1&gt;Create&lt;/h1&gt;
+
+    &lt;h4&gt;Movie&lt;/h4&gt;
+    &lt;hr /&gt;
+    &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"row"</span>&gt;
+        &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"col-md-4"</span>&gt;
+            &lt;form method=<span class="hljs-string">"post"</span>&gt;
+                &lt;div asp-validation-summary=<span class="hljs-string">"ModelOnly"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"text-danger"</span>&gt;&lt;/div&gt;
+                &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-group"</span>&gt;
+                    &lt;label asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Title"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"control-label"</span>&gt;&lt;/label&gt;
+                    &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Title"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-control"</span> /&gt;
+                    &lt;span asp-validation-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Title"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"text-danger"</span>&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-group"</span>&gt;
+                    &lt;label asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.ReleaseDate"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"control-label"</span>&gt;&lt;/label&gt;
+                    &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.ReleaseDate"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-control"</span> /&gt;
+                    &lt;span asp-validation-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.ReleaseDate"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"text-danger"</span>&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-group"</span>&gt;
+                    &lt;label asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Genre"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"control-label"</span>&gt;&lt;/label&gt;
+                    &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Genre"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-control"</span> /&gt;
+                    &lt;span asp-validation-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Genre"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"text-danger"</span>&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-group"</span>&gt;
+                    &lt;label asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Price"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"control-label"</span>&gt;&lt;/label&gt;
+                    &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Price"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-control"</span> /&gt;
+                    &lt;span asp-validation-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Movie.Price"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"text-danger"</span>&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-group"</span>&gt;
+                    &lt;input type=<span class="hljs-string">"submit"</span> <span class="hljs-keyword">value</span>=<span class="hljs-string">"Create"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"btn btn-primary"</span> /&gt;
+                &lt;/div&gt;
+            &lt;/form&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div&gt;
+        &lt;a asp-page=<span class="hljs-string">"Index"</span>&gt;Back to List&lt;/a&gt;
+    &lt;/div&gt;
+
+    @section Scripts {
+        @{<span class="hljs-keyword">await</span> Html.RenderPartialAsync(<span class="hljs-string">"_ValidationScriptsPartial"</span>);}
+    }
+</div></code></pre>
+<p>Visual Studio displays the following tags in a distinctive bold font used for Tag Helpers:</p>
+<ul>
+<li><code>&lt;form method=&quot;post&quot;&gt;</code></li>
+<li><code>&lt;div asp-validation-summary=&quot;ModelOnly&quot; class=&quot;text-danger&quot;&gt;&lt;/div&gt;</code></li>
+<li><code>&lt;label asp-for=&quot;Movie.Title&quot; class=&quot;control-label&quot;&gt;&lt;/label&gt;</code></li>
+<li><code>&lt;input asp-for=&quot;Movie.Title&quot; class=&quot;form-control&quot; /&gt;</code></li>
+<li><code>&lt;span asp-validation-for=&quot;Movie.Title&quot; class=&quot;text-danger&quot;&gt;&lt;/span&gt;</code></li>
+</ul>
+<p>The <code>&lt;form method=&quot;post&quot;&gt;</code> element is a <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0#the-form-tag-helper">Form Tag Helper</a>. The Form Tag Helper automatically includes an <a href="https://docs.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-6.0">antiforgery token</a>.</p>
+<p>The scaffolding engine creates Razor markup for each field in the model, except the ID, similar to the following:</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">asp-validation-summary</span>=<span class="hljs-string">"ModelOnly"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"text-danger"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-group"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">asp-for</span>=<span class="hljs-string">"Movie.Title"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"control-label"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">asp-for</span>=<span class="hljs-string">"Movie.Title"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">asp-validation-for</span>=<span class="hljs-string">"Movie.Title"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"text-danger"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
+<p>The <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0#the-validation-tag-helpers">Validation Tag Helpers</a> (<code>&lt;div asp-validation-summary</code> and <code>&lt;span asp-validation-for</code>) display validation errors. Validation is covered in more detail later in this series.</p>
+<p>The <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0#the-label-tag-helper">Label Tag Helper</a> (<code>&lt;label asp-for=&quot;Movie.Title&quot; class=&quot;control-label&quot;&gt;&lt;/label&gt;</code>) generates the label caption and <code>[for]</code> attribute for the <code>Title</code> property.</p>
+<p>The <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0">Input Tag Helper</a> (<code>&lt;input asp-for=&quot;Movie.Title&quot; class=&quot;form-control&quot;&gt;</code>) uses the <a href="https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/mvc-music-store/mvc-music-store-part-6">DataAnnotations</a> attributes and produces HTML attributes needed for jQuery Validation on the client-side.</p>
+<p>For more information on Tag Helpers such as <code>&lt;form method=&quot;post&quot;&gt;</code>, see <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-6.0">Tag Helpers in ASP.NET Core</a>.</p>
+<h2 id="working-with-a-database">Working with a database</h2>
+<p>The <code>RazorPagesMovieContext</code> object handles the task of connecting to the database and mapping <code>Movie</code> objects to database records. The database context is registered with the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-6.0">Dependency Injection</a> container in <code>Program.cs</code>:</p>
+<h3 id="programcs">Program.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> Microsoft.Extensions.DependencyInjection;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Data;
+    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+    <span class="hljs-comment">// Add services to the container.</span>
+    builder.Services.AddRazorPages();
+
+    builder.Services.AddDbContext&lt;RazorPagesMovieContext&gt;(options =&gt; 
+           options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="hljs-string">"RazorPagesMovieContext"</span>)));
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+</div></code></pre>
+<p>The ASP.NET Core Configuration system reads the <code>ConnectionString</code> key. For local development, configuration gets the connection string from the <code>appsettings.json</code> file.</p>
+<pre class="hljs"><code><div>    {
+      <span class="hljs-attr">"Logging"</span>: {
+        <span class="hljs-attr">"LogLevel"</span>: {
+          <span class="hljs-attr">"Default"</span>: <span class="hljs-string">"Information"</span>,
+          <span class="hljs-attr">"Microsoft"</span>: <span class="hljs-string">"Warning"</span>,
+          <span class="hljs-attr">"Microsoft.Hosting.Lifetime"</span>: <span class="hljs-string">"Information"</span>
+        }
+      },
+      <span class="hljs-attr">"AllowedHosts"</span>: <span class="hljs-string">"*"</span>,
+      <span class="hljs-attr">"ConnectionStrings"</span>: {
+        <span class="hljs-attr">"RazorPagesMovieContext"</span>: <span class="hljs-string">"Server=(localdb)\\mssqllocaldb;Database=RazorPagesMovieContext-bc;Trusted_Connection=True;   MultipleActiveResultSets=true"</span>
+      }
+    }
+</div></code></pre>
+<p>When the app is deployed to a test or production server, an environment variable can be used to set the connection string to a test or production database server. For more information, see <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-6.0">Configuration</a>.</p>
+<h3 id="sql-server-express-localdb">SQL Server Express LocalDB</h3>
+<p>LocalDB is a lightweight version of the SQL Server Express database engine that's targeted for program development. LocalDB starts on demand and runs in user mode, so there's no complex configuration. By default, LocalDB database creates <code>*.mdf</code> files in the <code>C:\Users\&lt;user&gt;\</code> directory.</p>
+<p>From the <strong>View</strong> menu, open <strong>SQL Server Object Explorer (SSOX)</strong>.</p>
+<p><img src="assets/images/sql-server-object-explorer.jpg" alt="SQL Server Object Explorer" title="SQL Server Object Explorer"></p>
+<p>Right-Click on the <code>Movie</code> table and click on <em>View Designer</em>.</p>
+<p><img src="assets/images/view-designer.jpg" alt="Table view designer" title="Table view designer"></p>
+<p><strong>Note:</strong> the key icon next to <code>ID</code>. By default, EF creates a property named <code>ID</code> for the primary key.</p>
+<p>Clicking on <em>View Data</em> will show you a grid of your data.</p>
+<p><img src="assets/images/data-designer.jpg" alt="Table data view" title="Table data view"></p>
+<h3 id="seed-the-database">Seed the database</h3>
+<p>Create a new class named <code>SeedData</code> in the Models folder with the following code:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Data;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesMovie.Models</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title">SeedData</span>
+        {
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Initialize</span>(<span class="hljs-params">IServiceProvider serviceProvider</span>)</span>
+            {
+                <span class="hljs-keyword">using</span> (<span class="hljs-keyword">var</span> context = <span class="hljs-keyword">new</span> RazorPagesMovieContext(
+                    serviceProvider.GetRequiredService&lt;
+                        DbContextOptions&lt;RazorPagesMovieContext&gt;&gt;()))
+                {
+                    <span class="hljs-keyword">if</span> (context == <span class="hljs-literal">null</span> || context.Movie == <span class="hljs-literal">null</span>)
+                    {
+                        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ArgumentNullException(<span class="hljs-string">"Null RazorPagesMovieContext"</span>);
+                    }
+
+                    <span class="hljs-comment">// Look for any movies.</span>
+                    <span class="hljs-keyword">if</span> (context.Movie.Any())
+                    {
+                        <span class="hljs-keyword">return</span>;   <span class="hljs-comment">// DB has been seeded</span>
+                    }
+
+                    context.Movie.AddRange(
+                        <span class="hljs-keyword">new</span> Movie
+                        {
+                            Title = <span class="hljs-string">"When Harry Met Sally"</span>,
+                            ReleaseDate = DateTime.Parse(<span class="hljs-string">"1989-2-12"</span>),
+                            Genre = <span class="hljs-string">"Romantic Comedy"</span>,
+                            Price = <span class="hljs-number">7.99</span>M
+                        },
+
+                        <span class="hljs-keyword">new</span> Movie
+                        {
+                            Title = <span class="hljs-string">"Ghostbusters "</span>,
+                            ReleaseDate = DateTime.Parse(<span class="hljs-string">"1984-3-13"</span>),
+                            Genre = <span class="hljs-string">"Comedy"</span>,
+                            Price = <span class="hljs-number">8.99</span>M
+                        },
+
+                        <span class="hljs-keyword">new</span> Movie
+                        {
+                            Title = <span class="hljs-string">"Ghostbusters 2"</span>,
+                            ReleaseDate = DateTime.Parse(<span class="hljs-string">"1986-2-23"</span>),
+                            Genre = <span class="hljs-string">"Comedy"</span>,
+                            Price = <span class="hljs-number">9.99</span>M
+                        },
+
+                        <span class="hljs-keyword">new</span> Movie
+                        {
+                            Title = <span class="hljs-string">"Rio Bravo"</span>,
+                            ReleaseDate = DateTime.Parse(<span class="hljs-string">"1959-4-15"</span>),
+                            Genre = <span class="hljs-string">"Western"</span>,
+                            Price = <span class="hljs-number">3.99</span>M
+                        }
+                    );
+                    context.SaveChanges();
+                }
+            }
+        }
+    }
+</div></code></pre>
+<p>If there are any movies in the database, the seed initializer returns and no movies are added.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">if</span> (context.Movie.Any())
+    {
+        <span class="hljs-keyword">return</span>;
+    }
+</div></code></pre>
+<h3 id="add-the-seed-initializer">Add the seed initializer</h3>
+<p>Update the <code>Program.cs</code> with the following highlighted code:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Data;
+    <span class="hljs-keyword">using</span> RazorPagesMovie.Models;
+
+    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddRazorPages();
+
+    builder.Services.AddDbContext&lt;RazorPagesMovieContext&gt;(options =&gt;
+           options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="hljs-string">"RazorPagesMovieContext"</span>)));
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+
+    <span class="hljs-keyword">using</span> (<span class="hljs-keyword">var</span> scope = app.Services.CreateScope())
+    {
+        <span class="hljs-keyword">var</span> services = scope.ServiceProvider;
+
+        SeedData.Initialize(services);
+    }
+
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+</div></code></pre>
+<p>In the previous code, <code>Program.cs</code> has been modified to do the following:</p>
+<p>Get a database context instance from the dependency injection (DI) container.</p>
+<p>Call the <code>seedData.Initialize</code> method, passing to it the database context instance.</p>
+<p>Dispose the context when the seed method completes. The <a href="https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement">using statement</a> ensures the context is disposed.</p>
+<p>The following exception occurs when <code>Update-Database</code> has not been run:</p>
+<blockquote>
+<p>SqlException: Cannot open database &quot;RazorPagesMovieContext-&quot; requested by the login. The login failed. Login failed for user 'user name'.</p>
+</blockquote>
+<h3 id="test-the-app">Test the app</h3>
+<p>Delete all the records in the database so the seed method will run. Stop and start the app to seed the database. If the database isn't seeded, put a breakpoint on <code>if (context.Movie.Any())</code> and step through the code.</p>
+<p>The app shows the seeded data:</p>
+<p><img src="assets/images/new-movie-list.jpg" alt="New movie list view" title="New movie list view"></p>
 
 </body>
 </html>
