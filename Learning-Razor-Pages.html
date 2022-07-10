@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Learning-Razor-Pages.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="learning-razor-pages">Learning Razor Pages</h1>
+<h2 id="what-will-you-be-doing">What will you be doing?</h2>
+<p>In this module, you will:</p>
+<ul>
+<li>Understand when and why to use Razor Pages for your ASP.NET Core app.</li>
+<li>Use the .NET CLI to create a Razor Pages app.</li>
+<li>Create a form that supports the app's product data management requirements.</li>
+<li>Run and test the web app.</li>
+</ul>
+<h2 id="what-razor-pages-are-and-the-benefit-they-provide">What Razor Pages are and the benefit they provide</h2>
+<p>Razor Pages is a server-side, page-centric programming model for building web UI with ASP.NET Core. Razor Pages provide the following benefits:</p>
+<ul>
+<li>Makes it easy to get started building dynamic web apps when all you need is to define UI logic using a combination of HTML, CSS, and C#.</li>
+<li>Encourages organization of files by feature, which eases maintenance of your app.</li>
+<li>Can be broadly described as an HTML file in which you work with markup as you're used to. You also have the advantage of adding server-side C# code by using Razor syntax.</li>
+</ul>
+<p>Razor Pages use a markup language called <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-6.0">Razor</a> for embedding server-based code into webpages. Razor syntax is a combination of HTML and C# where the C# code defines the dynamic rendering logic for the page. In a webpage that uses the Razor syntax, there can be two kinds of content: client content and server code:</p>
+<ul>
+<li>Client content: Contains what you're used to in webpages: HTML markup (elements), style information such as CSS, maybe some client script such as JavaScript, and plain text.</li>
+<li>Server code: Razor enables you to add server code to your client content. If there's server code in the page, the server runs that code first, before it sends the page to the browser. By running on the server, the code can perform more complex tasks than using client content alone. For example, securely accessing databases. Most importantly, server code can dynamically create client content — it can generate HTML markup or other content and send it to the browser along with any static HTML that the page might contain. From the browser's perspective, client content generated on the server is no different than any other client content.</li>
+</ul>
+<h2 id="separation-of-concerns-in-the-pagemodel">Separation of concerns in the <code>PageModel</code></h2>
+<p>Razor Pages enforces separation of concerns for page-related data properties and logic operations in a C# <code>PageModel</code> class. A model object typically defines data properties and encapsulates any logic or operations related to those data properties. More specifically, a <code>PageModel</code>:</p>
+<ul>
+<li>Encapsulates the data properties and logic operations scoped just to its Razor page.</li>
+<li>Defines page handlers for HTTP requests sent to the page and for the data used to render the page.</li>
+</ul>
+<h2 id="when-to-use-razor-pages">When to use Razor Pages</h2>
+<p>Use Razor Pages in your ASP.NET Core app when you:</p>
+<ul>
+<li>Want to generate dynamic web UI from your ASP.NET Core app.</li>
+<li>Prefer a page-focused approach to developing web apps, where the page markup and <code>PageModel</code> are in close proximity.</li>
+<li>Want your page-focused ASP.NET Core app to use partial views - mechanisms for reducing duplication of common markup across the site.</li>
+</ul>
+<p>Razor Pages allow you to keep your ASP.NET Core pages organized in a simpler way:</p>
+<ul>
+<li>All view (page) specific logic and page properties defined in the Razor page's (<code>PageModel</code>) can be kept together in their own namespace and directory.</li>
+<li>Groups of related pages can be kept in their own namespace and directory.</li>
+</ul>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>ASP.NET Core also supports the MVC pattern for building web apps. The <code>Model</code> defines the fundamental behaviors and data for the app and its components. The <code>View</code> uses HTML and Razor syntax to provide the UI. The <code>Controller</code> is a class that receives HTTP requests and handles user actions.</p>
+<p>Use ASP.NET Core MVC when you prefer to build web apps with a clear separation between the Model, View, and Controller.</p>
+<p>Razor Pages is built on the same infrastructure as ASP.NET Core MVC. Both Razor Pages and MVC can be used within the same ASP.NET Core app. ASP.NET Core MVC is outside of the scope for this module.</p>
+</blockquote>
+<h2 id="create-new-aspnet-core-app">Create new ASP.NET Core app</h2>
+<p>The .NET CLI is the simplest way to create an ASP.NET Core web app. The CLI is pre-installed when you installed the .NET SDK. In this unit, you'll use the .NET CLI to create an ASP.NET Core web app locally. You'll also gain an understanding of the resulting project.</p>
+<p>We are going to create a simple app names <strong>RazorPagesPizza</strong> from the command line.</p>
+<p>Create a new folder named <strong>RazorPagesPizza</strong>.</p>
+<p>Open Visual Studio Code</p>
+<p>At the command prompt create a new web application.</p>
+<pre class="hljs"><code><div>    dotnet new webapp -f net6.0
+</div></code></pre>
+<p>Run your application.</p>
+<pre class="hljs"><code><div>    dotnet run
+</div></code></pre>
+<h2 id="program-structure">Program Structure</h2>
+<p><strong>Program.cs</strong> serves as the application's managed entry point.</p>
+<p><strong>wwwroot</strong> holds all of the static content for our website. This includes a CSS, JavaScript and LIB folders. CSS contains a <code>site.css</code> file where we can modify our styles. The JavaScript folder contains a single script named site.js for our JavaScript code. LIB contains the Bootstrap CSS files for our page layout.</p>
+<p><strong>Pages</strong> is where our Razor Pages reside. At present there are only two pages we see on our simple website, Index.cshtml and Privacy.cshtml.</p>
+<h3 id="privacycshtml">Privacy.cshtml</h3>
+<pre class="hljs"><code><div>    @page
+    @model PrivacyModel
+   
+   @{
+        ViewData[<span class="hljs-string">"Title"</span>] = <span class="hljs-string">"Privacy Policy"</span>;
+    }
+   
+   &lt;h1&gt;@ViewData[<span class="hljs-string">"Title"</span>]&lt;/h1&gt;
+
+    &lt;p&gt;Use <span class="hljs-keyword">this</span> page to detail your site<span class="hljs-string">'s privacy policy.&lt;/p&gt;
+</span></div></code></pre>
+<p>This page contains the markup with C# code using Razor syntax.</p>
+<p>We also have a C# PageModel class that defines page handler methods and data used to render the page.</p>
+<h3 id="privacycshtmlcs">Privacy.cshtml.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesPizza.Pages</span>;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PrivacyModel</span> : <span class="hljs-title">PageModel</span>
+    {
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> ILogger&lt;PrivacyModel&gt; _logger;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">PrivacyModel</span>(<span class="hljs-params">ILogger&lt;PrivacyModel&gt; logger</span>)</span>
+        {
+            _logger = logger;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+        {
+        }
+    }
+</div></code></pre>
+<p>This code is setting up logging using dependency injection and has an <code>OnGet()</code> method.</p>
+<p>We have a <code>.cshtml</code> and <code>.cs</code> paired page model so that we can have a separation of concerns. We could add inline <code>.cs</code> code to the <code>.cshtml</code> page but it gets complicated doing this.</p>
+<h2 id="pagesshared">Pages/Shared</h2>
+<p>Contains partial markup elements that are shared across several Razor pages.</p>
+<ul>
+<li>_Layout.cshtml: Provides common layout elements across multiple pages.</li>
+<li>_ValidationScriptsPartial.cshtml: Provides validation functionality such as client-side form input validation and cross-site anti-forgery validation. This partial view is available to all pages in the project.</li>
+</ul>
+<h3 id="layoutcshtml">_Layout.cshtml</h3>
+<p>Is used to provide layout content to our Razor pages. It provides the header and footer for all pages.</p>
+<h4 id="header-code">header code</h4>
+<pre class="hljs"><code><div>    <span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width, initial-scale=1.0"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>@ViewData["Title"] - RazorPagesPizza<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"~/lib/bootstrap/dist/css/bootstrap.min.css"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"~/css/site.css"</span> <span class="hljs-attr">asp-append-version</span>=<span class="hljs-string">"true"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">"stylesheet"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"~/RazorPagesPizza.styles.css"</span> <span class="hljs-attr">asp-append-version</span>=<span class="hljs-string">"true"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">nav</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"container"</span>&gt;</span>
+                    ...
+</div></code></pre>
+<h4 id="footer-code">footer code</h4>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">footer</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"border-top footer text-muted"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"container"</span>&gt;</span>
+            <span class="hljs-symbol">&amp;copy;</span> 2022 - RazorPagesPizza - <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">asp-area</span>=<span class="hljs-string">""</span> <span class="hljs-attr">asp-page</span>=<span class="hljs-string">"/Privacy"</span>&gt;</span>Privacy<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">footer</span>&gt;</span>
+</div></code></pre>
+<p>At the bottom of the page we load our jQuery and site.js file.</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"~/lib/jquery/dist/jquery.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"~/js/site.js"</span> <span class="hljs-attr">asp-append-version</span>=<span class="hljs-string">"true"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</div></code></pre>
+<p>After the header and navigation bar code we have a <code>@RenderBody()</code> method and this is where our page code is loaded to build up a complete page.</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"container"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">role</span>=<span class="hljs-string">"main"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"pb-3"</span>&gt;</span>
+            @RenderBody()
+        <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
+<h2 id="layouts-and-partial-view-files">Layouts and partial view files</h2>
+<ul>
+<li>Layouts: In ASP.NET layouts are <code>.cshtml</code> files that define a top-level template for views in the application. Apps don't require a layout and apps can also define more than one layout with different views specifying different layouts. Most web applications have a common layout that provides a consistent user experience. The layout typically includes common UI elements such as the app header, navigation, menu elements and footer. Common HTML structures such as scripts and stylesheets are also frequently used by many pages within an app. All of these shared elements maybe defined in a layout file, which can then be referenced by any view used within the app. Layouts reduce duplicate code in views.</li>
+<li>Partial Views: A partial view is a Razor markup file (<code>.cshtml</code>) that renders HTML output within another markup file's rendered output. Partial views are used to break up large markup files into smaller components. They also reduce duplication of common markup content across markup files. Partial views aren't used to maintain common elements. Common layout elements are specified in a <code>_Layout.cshtml</code> file.</li>
+</ul>
+<h2 id="the-pages-directory-structure-and-routing-requests">The Pages directory structure and routing requests</h2>
+<p>Razor pages use the directory structure within the Pages directory as the convention for routing requests by default.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">URL</th>
+<th style="text-align:left">Maps to this Razor page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">www.domain.com</td>
+<td style="text-align:left">Pages/Index.cshtml</td>
+</tr>
+<tr>
+<td style="text-align:left">www.domain.com/index</td>
+<td style="text-align:left">Pages/Index.cshtml</td>
+</tr>
+<tr>
+<td style="text-align:left">www.domain.com/products</td>
+<td style="text-align:left">Pages/Products/Index.cshtml</td>
+</tr>
+<tr>
+<td style="text-align:left">www.domain.com/products/create</td>
+<td style="text-align:left">Pages/Products/Create.cshtml</td>
+</tr>
+</tbody>
+</table>
+<h2 id="create-a-page">Create a page</h2>
+<pre class="hljs"><code><div>    dotnet new page --name Pizza --namespace RazorPagesPizza.Pages --output Pages
+</div></code></pre>
+<p>The preceding command:</p>
+<p>Creates the following files in the <code>RazorPagesPizza.Pages</code> namespace:</p>
+<p><strong>Pizza.cshtml</strong> - The Razor page<br>
+<strong>Pizza.cshtml.cs</strong> - The accompanying PageModel class</p>
+<p>Stores both files in the project's Pages directory.</p>
+<p><strong>Note:</strong> that there's nothing magical about using the CLI to create these files. You can also create the files manually; the CLI command is just a shortcut for doing so.</p>
+<h3 id="pizzacshtml">Pizza.cshtml</h3>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesPizza.Pages.PizzaModel
+    @{
+    }
+</div></code></pre>
+<p>The preceding Razor page contains reserved Razor keywords:</p>
+<p>The <code>@page</code> directive is what makes the page a Razor page. It indicates the page can handle HTTP requests. The <code>@page</code> directive must be the first directive on a Razor page.<br>
+The <code>@model</code> directive specifies the model type made available to the Razor page. In this case, the type is the PageModel-derived class name, prefixed with its namespace. As you recall, that class is defined in <code>Pages/Pizza.cshtml.cs</code>.</p>
+<h2 id="render-html-and-transition-to-c">Render HTML and transition to C</h2>
+<p>The following markup is an example of an <code>@</code> symbol followed by C# code. The code sets the <code>ViewData</code> collection's <code>Title</code> key value to <code>Create</code>. Razor syntax uses the <code>@</code> symbol to transition from HTML to C#. If the <code>@</code> symbol is followed by a Razor reserved keyword, it transitions into Razor-specific markup; otherwise, it transitions to C#. Razor evaluates the C# expressions and renders them in the HTML output.</p>
+<pre class="hljs"><code><div>    @{
+        ViewData[&quot;Title&quot;] = &quot;Pizza&quot;;
+    }
+</div></code></pre>
+<p>A Razor page supports Razor syntax, which is HTML and C# combined. The C# code defines the dynamic rendering logic for the page on the server. The default Razor language is HTML. Rendering HTML from Razor markup is no different than rendering HTML from an HTML file. HTML markup in <code>.cshtml</code> Razor page files is rendered by the server unchanged. In Razor Pages, HTML can be used as you're used to. At the same time, you can take advantage of powerful and time-saving Razor features as you learn to use them.</p>
+<h2 id="add-pizza-and-pizzaservice-classes">Add Pizza and PizzaService classes</h2>
+<p>Before you start to implement the form to manage pizzas, you need to have a data store that you can perform operations on.</p>
+<p>A <code>model</code> class is needed to represent a pizza in inventory. The model contains properties that represent the characteristics of a pizza. The model is used to pass data in the web app and to persist pizza options in the data store. In this unit, that data store will be a simple local in-memory caching service. In a real-world application, you would consider using a database, such as SQL Server, with Entity Framework Core.</p>
+<h2 id="create-a-pizza-model">Create a pizza model</h2>
+<p>Run the following command in your project's root directory to create a <code>Models</code> folder:</p>
+<pre class="hljs"><code><div>    mkdir Models
+</div></code></pre>
+<p>Select the <code>Models</code> folder in Visual Studio Code and add a new File called <strong>Pizza.cs</strong>.</p>
+<p>Add the following code to <strong>Models/Pizza.cs</strong> to define a pizza.</p>
+<h3 id="modelspizzacs">Models/Pizza.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> System.ComponentModel.DataAnnotations;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesPizza.Models</span>;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Pizza</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Id { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+        [<span class="hljs-meta">Required</span>]
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Name { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+        <span class="hljs-keyword">public</span> PizzaSize Size { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">bool</span> IsGlutenFree { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+        [<span class="hljs-meta">Range(0.01, 9999.99)</span>]
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">decimal</span> Price { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> PizzaSize { Small, Medium, Large }
+</div></code></pre>
+<h2 id="add-data-service">Add data service</h2>
+<p>Run the following command in your project's root directory to create a <strong>Services</strong> folder:</p>
+<pre class="hljs"><code><div>    mkdir Services
+</div></code></pre>
+<p>Select the folder in Visual Studio Code and add a new File called <code>PizzaService.cs</code>.</p>
+<p>Add the following code to <strong>Services/PizzaService.cs</strong> to create an in-memory pizza data service.</p>
+<h3 id="servicespizzaservicecs">Services/PizzaService.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> RazorPagesPizza.Models;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesPizza.Services</span>;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PizzaService</span>
+    {
+        <span class="hljs-keyword">static</span> List&lt;Pizza&gt; Pizzas { <span class="hljs-keyword">get</span>; }
+        <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> nextId = <span class="hljs-number">3</span>;
+        <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-title">PizzaService</span>(<span class="hljs-params"></span>)</span>
+        {
+            Pizzas = <span class="hljs-keyword">new</span> List&lt;Pizza&gt;
+                    {
+                        <span class="hljs-keyword">new</span> Pizza { Id = <span class="hljs-number">1</span>, Name = <span class="hljs-string">"Classic Italian"</span>, Price=<span class="hljs-number">20.00</span>M, Size=PizzaSize.    Large, IsGlutenFree = <span class="hljs-literal">false</span> },
+                        <span class="hljs-keyword">new</span> Pizza { Id = <span class="hljs-number">2</span>, Name = <span class="hljs-string">"Veggie"</span>, Price=<span class="hljs-number">15.00</span>M, Size=PizzaSize.Small,     IsGlutenFree = <span class="hljs-literal">true</span> }
+                    };
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> List&lt;Pizza&gt; <span class="hljs-title">GetAll</span>(<span class="hljs-params"></span>)</span> =&gt; Pizzas;
+
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Pizza? Get(<span class="hljs-keyword">int</span> id) =&gt; Pizzas.FirstOrDefault(p =&gt; p.Id == id);
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Add</span>(<span class="hljs-params">Pizza pizza</span>)</span>
+        {
+            pizza.Id = nextId++;
+            Pizzas.Add(pizza);
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Delete</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> id</span>)</span>
+        {
+            <span class="hljs-keyword">var</span> pizza = Get(id);
+            <span class="hljs-keyword">if</span> (pizza <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>)
+                <span class="hljs-keyword">return</span>;
+
+            Pizzas.Remove(pizza);
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>(<span class="hljs-params">Pizza pizza</span>)</span>
+        {
+            <span class="hljs-keyword">var</span> index = Pizzas.FindIndex(p =&gt; p.Id == pizza.Id);
+            <span class="hljs-keyword">if</span> (index == <span class="hljs-number">-1</span>)
+                <span class="hljs-keyword">return</span>;
+
+            Pizzas[index] = pizza;
+        }
+    }
+</div></code></pre>
+<h2 id="add-form-markup-to-the-pizza-razor-page">Add form markup to the Pizza Razor page</h2>
+<p>Replace the contents of <strong>Pages/Pizza.cshtml</strong> with the following markup. Save your changes.</p>
+<h3 id="pagespizzacshtml">Pages/Pizza.cshtml</h3>
+<pre class="hljs"><code><div>    @page
+    @<span class="hljs-keyword">using</span> RazorPagesPizza.Models
+    @model RazorPagesPizza.Pages.PizzaModel
+    @{
+        ViewData[<span class="hljs-string">"Title"</span>] = <span class="hljs-string">"Pizza List"</span>;
+    }
+
+    &lt;h1&gt;Pizza List 🍕&lt;/h1&gt;
+    &lt;form method=<span class="hljs-string">"post"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"card p-3"</span>&gt;
+        &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"row"</span>&gt;
+            &lt;div asp-validation-summary=<span class="hljs-string">"All"</span>&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-group mb-0 align-middle"</span>&gt;
+            &lt;label asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"NewPizza.Name"</span>&gt;Name&lt;/label&gt;
+            &lt;input type=<span class="hljs-string">"text"</span> asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"NewPizza.Name"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"mr-5"</span>&gt;
+            &lt;label asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"NewPizza.Size"</span>&gt;Size&lt;/label&gt;
+            &lt;<span class="hljs-keyword">select</span> asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"NewPizza.Size"</span> asp-items=<span class="hljs-string">"Html.GetEnumSelectList&lt;PizzaSize&gt;()"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"mr-5"</span>&gt;&lt;/<span class="hljs-keyword">select</span>&gt;
+            &lt;label asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"NewPizza.Price"</span>&gt;&lt;/label&gt;
+            &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"NewPizza.Price"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"mr-5"</span> /&gt;
+            &lt;label asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"NewPizza.IsGlutenFree"</span>&gt;Gluten Free&lt;/label&gt;
+            &lt;input type=<span class="hljs-string">"checkbox"</span> asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"NewPizza.IsGlutenFree"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"mr-5"</span>&gt;
+            &lt;button <span class="hljs-keyword">class</span>=<span class="hljs-string">"btn btn-primary"</span>&gt;Add&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/form&gt;
+    &lt;table <span class="hljs-keyword">class</span>=<span class="hljs-string">"table mt-5"</span>&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Name&lt;/th&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Price&lt;/th&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Size&lt;/th&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Gluten Free&lt;/th&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Delete&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        @<span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> pizza <span class="hljs-keyword">in</span> Model.pizzas)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;@pizza.Name&lt;/td&gt;
+                &lt;td&gt;@(<span class="hljs-string">$"<span class="hljs-subst">{pizza.Price:C}</span>"</span>)&lt;/td&gt;
+                &lt;td&gt;@pizza.Size&lt;/td&gt;
+                &lt;td&gt;@Model.GlutenFreeText(pizza)&lt;/td&gt;
+                &lt;td&gt;
+                    &lt;form method=<span class="hljs-string">"post"</span> asp-page-handler=<span class="hljs-string">"Delete"</span> asp-route-id=<span class="hljs-string">"@pizza.Id"</span>&gt;
+                        &lt;button <span class="hljs-keyword">class</span>=<span class="hljs-string">"btn btn-danger"</span>&gt;Delete&lt;/button&gt;
+                    &lt;/form&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/table&gt;
+
+    @section Scripts {
+    &lt;<span class="hljs-keyword">partial</span> name=<span class="hljs-string">"_ValidationScriptsPartial"</span> /&gt;
+    }
+</div></code></pre>
+<p>The Pizza Razor page uses HTML and Razor to support a product creation form. The form accepts <strong>Name</strong> and <strong>Price</strong> values for the product to be created. With relatively little markup, dynamic features have been provided through Razor Tag Helpers. Client-side form input validation is enabled via the inclusion of the <em>Pages/Shared/_ValidationScriptsPartial.cshtml</em> partial view. The partial view's contents are injected into the layout page's Scripts section.</p>
+<h2 id="review-razor-tag-helpers">Review Razor Tag Helpers</h2>
+<p>Tag Helpers address the inefficiencies of context switching between HTML and C#. Most of ASP.NET Core's built-in Tag Helpers extend standard HTML elements. Tag Helpers provide additional server-side attributes for HTML elements, making the elements more robust.</p>
+<p>There are four Tag Helpers on this page:</p>
+<ul>
+<li>Partial</li>
+<li>Label</li>
+<li>Input</li>
+<li>Validation Summary Message</li>
+</ul>
+<h3 id="partial-tag-helper">Partial Tag Helper</h3>
+<p>The following markup uses the Partial Tag Helper to asynchronously render a partial view:</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">partial</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"_ValidationScriptsPartial"</span> /&gt;</span>
+</div></code></pre>
+<p>The Partial Tag Helper's <code>name</code> attribute accepts the partial view name without the file extension. A view discovery process locates the partial view in the project.</p>
+<p>This Tag Helper syntax is an alternative to the following HTML Helper syntax:</p>
+<pre class="hljs"><code><div>    @{<span class="hljs-keyword">await</span> Html.RenderPartialAsync(<span class="hljs-string">"_ValidationScriptsPartial"</span>);}
+</div></code></pre>
+<h3 id="label-tag-helper">Label Tag Helper</h3>
+<p>The following markup uses the Label Tag Helper:</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">asp-for</span>=<span class="hljs-string">"NewPizza.Name"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"control-label"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+</div></code></pre>
+<p>The Label Tag Helper extends the standard HTML <code>&lt;label&gt;</code> element. As is common for many Tag Helpers, it uses an <code>asp-for</code> attribute. The attribute accepts a specified PageModel property. In this case, the value of the <code>PageModel</code> Name property will be rendered as the content for an HTML <code>&lt;label&gt;</code> element. The <code>asp-for</code> attribute is scoped to the <code>PageModel</code> for the Razor page, so the <code>@</code> symbol isn't used. The label is dynamic as is needed here, but remains compact and easy to add in your markup.</p>
+<h3 id="input-tag-helper">Input Tag Helper</h3>
+<p>The following markup uses the Input Tag Helper. It extends the standard HTML <code>&lt;input&gt;</code> element. It also uses an <code>asp-for</code> attribute to specify a <code>PageModel</code> property.</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">asp-for</span>=<span class="hljs-string">"NewPizza.Name"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> /&gt;</span>
+</div></code></pre>
+<p><strong>The Input Tag Helper:</strong></p>
+<ul>
+<li>Evaluates the <strong>NewPizza.Name</strong> property, like the Label Tag Helper.</li>
+<li>Adds an <code>id</code> and <code>name</code> HTML attribute based on that property.</li>
+<li>Sets the input type appropriately. For example, if the specified property type is <code>bool</code>, an input type of <code>checkbox</code> is used in the generated HTML. In this case, the <code>NewPizza.Name</code> property type is string. The <code>NewPizza.Name</code> property is set by the model's data annotation attributes, which will be reviewed later in this module.</li>
+<li>Provides client-side validation using jQuery, based on the model's data annotation attributes provided through the <code>PageModel</code>.</li>
+<li>Prompts the Razor engine to provide additional, more robust server-side validation, if client-side validation was successful. The <em>Pizza</em> Razor page's <strong>HTTP POST</strong> event lifecycle, which includes client-side and server-side input validation, is walked through later in this module.</li>
+</ul>
+<p>The following HTML output is generated from the Input Tag Helper located in the <em>Pizza</em> page:</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"NewPizza.Name"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"NewPizza_Name"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">""</span> <span class="hljs-attr">data-val-required</span>=<span class="hljs-string">"The Name field is required."</span> <span class="hljs-attr">data-val</span>=<span class="hljs-string">"true"</span>&gt;</span>
+</div></code></pre>
+<h3 id="validation-summary-tag-helper">Validation Summary Tag Helper</h3>
+<p>The following markup uses the Validation Summary Tag Helper. It displays a validation message for a single property on the model.</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">asp-validation-summary</span>=<span class="hljs-string">"All"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
+<p>The Input Tag Helper adds HTML5 <code>data-</code> attributes to input elements. The attributes are based on properties in the C# model classes. While responsive client-side validation occurs, validation is also done on the server, which is more secure.</p>
+<p>The following HTML is rendered by the Validation Summary Tag Helper:</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"NewPizza.Price"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"NewPizza_Price"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">""</span> <span class="hljs-attr">data-val-required</span>=<span class="hljs-string">"The Price field is required."</span> <span class="hljs-attr">data-val</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">data-val-range-min</span>=<span class="hljs-string">"0.01"</span> <span class="hljs-attr">data-val-range-max</span>=<span class="hljs-string">"9999.99"</span> <span class="hljs-attr">data-val-range</span>=<span class="hljs-string">"The field Price must be between 0.01 and 9999.99."</span> <span class="hljs-attr">data-val-number</span>=<span class="hljs-string">"The field Price must be a number."</span>&gt;</span>
+</div></code></pre>
+<p>The type, <code>data-val-range-min</code>, <code>data-val-range-max</code>, and error response are dynamically set by the model's data annotations for the model's <code>Product.Price</code> property.</p>
+<p>The product creation Razor page has been created. In order to process form interactions, you'll need to modify the <code>PageModel</code> class to handle the form's HTTP POST request. Let's explore <code>PageModel</code> interactions next.</p>
+<h2 id="handle-interactions-in-pagemodel-handler-methods">Handle interactions in PageModel handler methods</h2>
+<p>In this unit, you'll review the structure of a Razor page <code>PageModel</code> class and its components. You'll learn how page handlers interact with your Razor page. Finally, you'll walk through the <code>Pizza</code> model and its data annotations that drive both client-side and server-side validation.</p>
+<h3 id="examine-the-structure-of-a-razor-pages-pagemodel-class">Examine the structure of a Razor Pages <code>PageModel</code> class</h3>
+<p>A new <code>PageModel</code> class file contains the following C# code:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesPizza.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PizzaModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+            }
+        }
+    }
+</div></code></pre>
+<p>A Razor page's <code>PageModel</code> class file defines any page handlers for HTTP requests sent to the page, and data used to render the page. The <code>PageModel</code> keeps those concerns separate from the Razor page, your app more modular, and easier to maintain. By convention, the <code>PageModel</code> class is named [PageName]Model and resides in the same namespace as the Razor page. In this case, the PizzaModel class in the namespace of RazorPagesPizza.Pages.</p>
+<p>Currently, the <code>PizzaModel</code> class handles the HTTP GET request with an empty <code>OnGet</code> page handler. You can add handlers for any HTTP verb. The most common handlers are:</p>
+<p><code>OnGet</code> to initialize state needed for the page.<br>
+<code>OnPost</code> to handle form submissions.</p>
+<p>The <em>Pizza</em> page contains a form and therefore requires an HTTP POST page handler.</p>
+<h2 id="http-post-page-handlers-in-a-pagemodel">HTTP POST page handlers in a PageModel</h2>
+<p>The <code>OnPostAsync</code> page handler needs to perform the following tasks for this app:</p>
+<ul>
+<li>Verify the user-submitted data posted to the <code>PageModel</code> is valid.</li>
+<li>If the attempted <code>PageModel</code> changes are invalid, the <em>Pizza</em> page is presented again to the user. A message is displayed clarifying the input requirements.</li>
+<li>If the <code>PageModel</code> update is valid, then data changes are passed to a service called <code>PizzaService</code>. The <code>PizzaService</code> will handle the concern persisting the data.</li>
+</ul>
+<h2 id="bind-the-model">Bind the model</h2>
+<p>The <code>PizzaModel</code> class needs access to the <code>Pizza</code> model. It will validate and pass <code>Pizza</code> entries from the <em>Pizza</em> form. It does so by using the <code>[BindProperty]</code> attribute in the following code:</p>
+<pre class="hljs"><code><div>    [<span class="hljs-meta">BindProperty</span>]
+    <span class="hljs-keyword">public</span> Pizza NewPizza { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+</div></code></pre>
+<p>Binding to properties can reduce the amount of code you have to write. Binding reduces code by using the same property to render fields such as in <code>&lt;input asp-for=&quot;Pizza.Name&quot;&gt;</code>.</p>
+<p><strong>Note:</strong> by using the <code>[BindProperty]</code> you can use the Model to connect both the <code>Markup</code> (.cshtml) page and the PageModel (.cs).</p>
+<h2 id="built-in-server-side-model-validation-using-aspnet-core-data-annotations">Built-in server-side model validation using ASP.NET Core data annotations</h2>
+<p>Model binding and validation are available when you create a ASP.NET Core web app. Both automatically occur before the execution of a page handler. So the <code>OnPostAsync</code> page handler only needs to verify the outcome of that validation.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+    {
+        <span class="hljs-keyword">return</span> Page();
+    }
+</div></code></pre>
+<p>In the preceding code, <code>ModelState</code> represents errors from model binding and validation. If the <code>ModelState</code> is invalid, then the <code>Pizza</code> page is presented again to the user. In the previous unit, you saw how the <code>Pizza</code> Razor page uses ASP.NET Core's built-in client-side form input validation to responsively provide the user with input validation feedback.</p>
+<p>If the <code>ModelState</code> is valid, the OnPostAsync page handler calls upon an instance of <code>PizzaService</code>. <code>PizzaService</code> is responsible for storing the information - in this case, using an in-memory data store.</p>
+<h2 id="define-validation-rules-for-the-pizza-model-using-data-annotations">Define validation rules for the Pizza model using data annotations</h2>
+<p>This project uses a central model file <em>Pizza.cs</em> for <code>Pizza</code> model validation and operations. It's used by all Razor page PageModels involved in UI for <code>Pizza</code> CRUD operations, and is used to validate <code>Pizza</code> data received from the web api. By convention, it's stored in the Models directory. The <code>Pizza</code> model's namespace is RazorPagesPizza.Models.</p>
+<p>Your new <code>PizzaModel</code> class gained access to any model types defined in the <code>RazorPagesPizza.Models</code> namespace, including the <code>Pizza</code> model, with the following <code>using</code> directive:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> RazorPagesPizza.Models;
+</div></code></pre>
+<p>Examine the <code>Pizza</code> model class:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> System.ComponentModel.DataAnnotations;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesPizza.Models</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Pizza</span>
+        {
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Id { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">Required</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Name { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+            <span class="hljs-keyword">public</span> PizzaSize Size { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">bool</span> IsGlutenFree { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">Range(0.01, 9999.99)</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">decimal</span> Price { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+        }
+
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> PizzaSize { Small, Medium, Large }
+    }
+</div></code></pre>
+<p>Data annotations are attributes that specify behaviors you want to enforce on the model properties to which they're applied.</p>
+<p>The <code>Pizza</code> class uses the:</p>
+<ul>
+<li><code>[Required]</code> attribute to indicate that a property must have a value.</li>
+<li><code>[Range]</code> attribute to constrain a value to a specific range.</li>
+</ul>
+<p>If you decide to enforce more validation rules, you can easily modify attributes in just one place, the <code>Pizza</code> model, without being required to modify any of the <code>PageModel</code> class files in the project. A significant benefit!</p>
+<p>A comprehensive set of data annotation attributes is available to you in the <code>System.ComponentModel.DataAnnotations</code> namespace. For the scope of this module, a simplified example is provided.</p>
+<h3 id="the-pizza-model-as-a-data-transfer-object">The Pizza model as a data transfer object</h3>
+<p>The <code>Pizza</code> model also serves as a Data Transfer Object (DTO). A DTO is an object that defines the data that will be sent over the network, in this case to the web API. In a more advanced version of this application, the <code>RazorPagesPizza</code> project's <code>PizzaService</code> class would use the <code>Pizza</code> model as a DTO that defines valid Pizza data that can be sent to and received from the web API or backing database.</p>
+<p>Next, you'll update the <code>PizzaModel</code> interact with the <code>PizzaService</code> class to list existing pizzas and create new ones.</p>
+<h2 id="handle-the-pizza-form-submission">Handle the Pizza form submission</h2>
+<p>In this unit, you'll add a HTTP POST page handler for the <em>Pizza</em> Razor page form. Finally, you'll walk through the <code>Pizza</code> model and its data annotations that drive both client-side and server-side validation.</p>
+<h3 id="examine-the-structure-of-a-razor-pages-pagemodel-class">Examine the structure of a Razor Pages PageModel class</h3>
+<p>Open the <em>Pages/Pizza.cshtml.cs</em> <code>PageModel</code> class file. You may remember, that when you created a new Razor page called Pizza, its <code>PageModel</code> class file named <em>Pizza.cshtml.cs</em> was generated.</p>
+<h4 id="pagespizzacshtmlcs">Pages/Pizza.cshtml.cs</h4>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesPizza.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PizzaModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+            }
+        }
+    }
+</div></code></pre>
+<h2 id="update-the-http-get-page-handler-to-display-the-list-of-pizzas">Update the HTTP Get page handler to display the list of Pizzas</h2>
+<p>Currently, the <code>PizzaModel</code> class handles the HTTP GET request with an empty <code>OnGet</code> page handler. Let's update this to display a list of pizzas from the <code>PizzaService</code>.</p>
+<h3 id="update-the-onget-page-handler">Update the OnGet page handler</h3>
+<p>Update the <code>OnGet</code> method as follows:</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+    {
+        pizzas = PizzaService.GetAll();
+    }
+</div></code></pre>
+<p>Add a <code>List&lt;Pizza&gt;</code> variable named <code>pizzas</code> to the <code>PizzaModel</code> class:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">public</span> List&lt;Pizza&gt; pizzas = <span class="hljs-keyword">new</span>();
+</div></code></pre>
+<p>When the <code>OnGet</code> method is called, it will assign the results of the <code>PizzaService.GetAll()</code> method to the <code>pizzas</code> variable. This variable will be accessible to the Razor page template, where it will be written to the table listing the available pizzas.</p>
+<p>These statements are referencing the <code>PizzaService</code> and <code>Pizza</code> classes, so you'll need to add the following using statements to the top of the <code>PizzaModel</code> class:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> RazorPagesPizza.Models;
+    <span class="hljs-keyword">using</span> RazorPagesPizza.Services;
+</div></code></pre>
+<h3 id="use-a-utility-method-to-format-the-gluten-free-information-in-the-list">Use a utility method to format the Gluten Free information in the list</h3>
+<p>The <code>IsGlutenFree</code> property is a boolean value. You can use a utility method to format the boolean value as a string. Add the following utility method to the <code>PizzaModel</code> class:</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> <span class="hljs-title">GlutenFreeText</span>(<span class="hljs-params">Pizza pizza</span>)</span>
+    {
+        <span class="hljs-keyword">if</span> (pizza.IsGlutenFree)
+        {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"GF"</span>;
+        }
+        <span class="hljs-keyword">else</span>
+        {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"NGF"</span>;
+        }
+    }
+</div></code></pre>
+<p><strong>Note:</strong> this is a really valuable way of working. You need to minimise the amount of logic that you add to the .cshtml page. In our <code>Pizza</code> model <code>IsGlutenFree</code> is a boolean and we don't want to add a true or false to the page. We handle this in the <code>PageModel</code> (<code>PizzaModel</code>) and change the boolean value to a string value as a message.</p>
+<p><img src="assets/images/pizza-page.jpg" alt="Pizza page showing Gluten option" title="Pizza page showing Gluten option"></p>
+<p>You can see the <em>Gluten Free</em> column showing either a <strong>GF</strong> or <strong>NGF</strong> result.</p>
+<h2 id="add-an-http-post-page-handler-to-the-pagemodel">Add an HTTP POST page handler to the <code>PageModel</code></h2>
+<p>Add the following method to the <em>Pages/Pizza.cshtml.cs</em> <code>PageModel</code> class. Save your changes.</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPost</span>(<span class="hljs-params"></span>)</span>
+    {
+        <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+        {
+            <span class="hljs-keyword">return</span> Page();
+        }
+    
+        PizzaService.Add(NewPizza);
+    
+        <span class="hljs-keyword">return</span> RedirectToAction(<span class="hljs-string">"Get"</span>);
+    }
+</div></code></pre>
+<p>The <code>PizzaModel</code> class now has an asynchronous <code>OnPost</code> page handler. <code>OnPost</code> executes when the user posts the <code>Pizza</code> page's form. You can also use the optional Async naming suffix, <code>OnPostAsync</code>.</p>
+<p>The <code>OnPost</code> page handler needs to perform the following tasks for this app:</p>
+<ul>
+<li>Verify the user-submitted data posted to the <code>PageModel</code> is valid.</li>
+<li>If the attempted <code>PageModel</code> changes are invalid, the <em>Pizza</em> page is presented again to the user. A message is displayed clarifying the input requirements.</li>
+<li>If the <code>PageModel</code> update is valid, then data changes are passed to a service called <code>PizzaService</code>. <code>PizzaService</code> will handle the concern of HTTP requests and responses to the web API.</li>
+</ul>
+<p><strong>Note:</strong> <code>return RedirectToAction(&quot;Get&quot;);</code> is basically calling for a page reload. There are other ways that this can be handled.</p>
+<h3 id="bind-the-model">Bind the model</h3>
+<p>The <code>PizzaModel</code> class needs access to the <code>Pizza</code> model. It will validate and pass Pizza entries from the Pizza form using the <code>[BindProperty]</code> attribute. Add the following code to your <code>PizzaModel</code> class:</p>
+<pre class="hljs"><code><div>    [<span class="hljs-meta">BindProperty</span>]
+    <span class="hljs-keyword">public</span> Pizza NewPizza { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-keyword">new</span>();
+</div></code></pre>
+<h2 id="add-an-http-post-handler-for-the-delete-buttons">Add an HTTP POST handler for the Delete buttons</h2>
+<p>A Razor page can include multiple forms. Since the Delete buttons in your list of pizzas modifies data, an HTTP POST rather that an HTTP GET is required.</p>
+<p>Add the following <code>OnPostDelete</code> method to the <code>PizzaModel</code> class:</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPostDelete</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> id</span>)</span>
+    {
+        PizzaService.Delete(id);
+        <span class="hljs-keyword">return</span> RedirectToAction(<span class="hljs-string">"Get"</span>);
+    }
+</div></code></pre>
+<h2 id="link-to-the-pizza-page">Link to the Pizza page</h2>
+<p>The Pizza page has been created and implemented. Let's allow users to navigate to it.</p>
+<h3 id="add-an-anchor-tag-helper-to-the-index-page">Add an Anchor Tag Helper to the Index page</h3>
+<p>In <em>Pages/Shared/Layout.cshtml</em>, add the following code to the <code>&lt;nav&gt;</code> section between the <code>Home</code> and <code>Privacy</code> links:</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"navbar-collapse collapse d-sm-inline-flex justify-content-between"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ul</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"navbar-nav flex-grow-1"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"nav-item"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"nav-link text-dark"</span> <span class="hljs-attr">asp-area</span>=<span class="hljs-string">""</span> <span class="hljs-attr">asp-page</span>=<span class="hljs-string">"/Index"</span>&gt;</span>Home<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"nav-item"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"nav-link text-dark"</span> <span class="hljs-attr">asp-area</span>=<span class="hljs-string">""</span> <span class="hljs-attr">asp-page</span>=<span class="hljs-string">"/Pizza"</span>&gt;</span>Pizza List<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"nav-item"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"nav-link text-dark"</span> <span class="hljs-attr">asp-area</span>=<span class="hljs-string">""</span> <span class="hljs-attr">asp-page</span>=<span class="hljs-string">"/Privacy"</span>&gt;</span>Privacy<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</div></code></pre>
+<p>The preceding highlighted code uses an Anchor Tag Helper. The Tag Helper:</p>
+<ul>
+<li>Directs the user to the <strong>Pages/Pizza</strong> Razor page, located in the same directory as the Index page.</li>
+<li>Enhances the standard HTML anchor (<code>&lt;a&gt;</code>) tag by adding custom HTML attributes, such as <code>asp-page-handler</code>.</li>
+</ul>
+<p>The <code>asp-page-handler</code> attribute is used to route to a specific page handler for the Razor page defined in the <code>asp-page</code> attribute. The <code>asp-page</code> attribute is used set an anchor tag's <code>href</code> attribute value to a specific Razor page.</p>
+<h2 id="summary">Summary</h2>
+<p>In this module, you examined the Razor Pages architecture in an ASP.NET Core app. This app provided a UI for updating and deleting product listings exposed through a web API endpoint. You added a product creation form, taking advantage of Razor Tag Helpers. With Tag Helpers, you quickly added client-side and server-side validation. You also gained cross-site antiforgery validation. You coded its PageModel class that provided a separation of concern for the page's logic operations and data properties.</p>
+<h3 id="next-steps">Next steps</h3>
+<p>Take a deeper dive into the documentation. The following ASP.NET Core features and concepts were introduced in this module:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/razor-pages/">Razor Pages</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor">Razor syntax reference</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms">Tag Helpers</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/partial">Partial views</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout">Layout</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing">Routing</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection">Dependency injection</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests#consumption-patterns">Make HTTP requests using a typed client pattern</a></li>
+</ul>
+<h2 id="learn-more-with-a-channel-9-video-series">Learn more with a Channel 9 video series</h2>
+<ul>
+<li><a href="https://channel9.msdn.com/Series/NET-Core-101/?WT.mc_id=Educationaldotnet-c9-scottha">.NET Core 101</a></li>
+<li><a href="https://channel9.msdn.com/Series/ASPNET-Core-101/?WT.mc_id=Educationaspnet-c9-niner">ASP.NET Core 101</a></li>
+</ul>
+
+</body>
+</html>

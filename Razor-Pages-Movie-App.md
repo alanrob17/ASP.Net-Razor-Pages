@@ -1372,3 +1372,762 @@ Update the ``Index.cshtml`` [<form> element](https://developer.mozilla.org/docs/
 Test the app by searching by ``genre``, by ``movie title``, and by both.
 
 ![Title-Genre search](assets/images/title-genre-search.jpg "Title-Genre search")
+
+## add a new field to a Razor Page in ASP.NET Core
+
+In this section [Entity Framework](https://docs.microsoft.com/en-us/ef/core/get-started/aspnetcore/new-db) Code First Migrations is used to:
+
+* Add a new field to the model.
+* Migrate the new field schema change to the database.
+
+When using EF Code First to automatically create and track a database, Code First:
+
+* Adds an [__EFMigrationsHistory](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/history-table) table to the database to track whether the schema of the database is in sync with the model classes it was generated from.
+* Throws an exception if the model classes aren't in sync with the database.
+
+Automatic verification that the schema and model are in sync makes it easier to find inconsistent database code issues.
+
+### Adding a Rating Property to the Movie Model
+
+1. Open the ``Models/Movie.cs`` file and add a ``Rating`` property:
+
+```csharp
+    public class Movie
+    {
+        public int ID { get; set; }
+        public string Title { get; set; } = string.Empty;
+
+        [Display(Name = "Release Date")]
+        [DataType(DataType.Date)]
+        public DateTime ReleaseDate { get; set; }
+        public string Genre { get; set; } = string.Empty;
+
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Price { get; set; }
+        public string Rating { get; set; } = string.Empty;
+    }
+```
+
+2. Edit ``Pages/Movies/Index.cshtml``, and add a ``Rating`` field:
+
+```csharp
+    @page
+    @model RazorPagesMovie.Pages.Movies.IndexModel
+
+    @{
+        ViewData["Title"] = "Index";
+    }
+
+    <h1>Index</h1>
+
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+
+    <form>
+        <p>
+            <select asp-for="MovieGenre" asp-items="Model.Genres">
+                <option value="">All</option>
+            </select>
+            Title: <input type="text" asp-for="SearchString" />
+            <input type="submit" value="Filter" />
+        </p>
+    </form>
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].ReleaseDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Genre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Movie[0].Rating)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Movie)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReleaseDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Genre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rating)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rating)
+                    </td>                    
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+```
+
+3. Update the following pages with a Rating field:
+
+#### Pages/Movies/Create.cshtml
+
+```csharp
+@page
+@model RazorPagesMovie.Pages.Movies.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Movie</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Movie.Title" class="control-label"></label>
+                <input asp-for="Movie.Title" class="form-control" />
+                <span asp-validation-for="Movie.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Movie.ReleaseDate" class="control-label"></label>
+                <input asp-for="Movie.ReleaseDate" class="form-control" />
+                <span asp-validation-for="Movie.ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Movie.Genre" class="control-label"></label>
+                <input asp-for="Movie.Genre" class="form-control" />
+                <span asp-validation-for="Movie.Genre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Movie.Price" class="control-label"></label>
+                <input asp-for="Movie.Price" class="form-control" />
+                <span asp-validation-for="Movie.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Movie.Rating" class="control-label"></label>
+                <input asp-for="Movie.Rating" class="form-control" />
+                <span asp-validation-for="Movie.Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+```
+
+#### Pages/Movies/Delete.cshtml
+
+```csharp
+    @page "{id:int}"
+    @model RazorPagesMovie.Pages.Movies.DeleteModel
+
+    @{
+        ViewData["Title"] = "Delete";
+    }
+
+    <h1>Delete</h1>
+
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <h4>Movie</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.Title)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.Title)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.ReleaseDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.ReleaseDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.Genre)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.Genre)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.Price)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.Price)
+            </dd>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.Rating)
+            </dd>        
+        </dl>
+        <form method="post">
+            <input type="hidden" asp-for="Movie.ID" />
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-page="./Index">Back to List</a>
+        </form>
+    </div>
+```
+
+#### Pages/Movies/Details.cshtml
+
+```csharp
+    @page "{id:int}"
+    @model RazorPagesMovie.Pages.Movies.DetailsModel
+
+    @{
+        ViewData["Title"] = "Details";
+    }
+
+    <h1>Details</h1>
+
+    <div>
+        <h4>Movie</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.Title)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.Title)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.ReleaseDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.ReleaseDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.Genre)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.Genre)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.Price)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.Price)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Movie.Rating)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Movie.Rating)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-page="./Edit" asp-route-id="@Model.Movie.ID">Edit</a> |
+        <a asp-page="./Index">Back to List</a>
+    </div>
+```
+
+#### Pages/Movies/Edit.cshtml
+
+```csharp
+    @page "{id:int}"
+    @model RazorPagesMovie.Pages.Movies.EditModel
+
+    @{
+        ViewData["Title"] = "Edit";
+    }
+
+    <h1>Edit</h1>
+
+    <h4>Movie</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Movie.ID" />
+                <div class="form-group">
+                    <label asp-for="Movie.Title" class="control-label"></label>
+                    <input asp-for="Movie.Title" class="form-control" />
+                    <span asp-validation-for="Movie.Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Movie.ReleaseDate" class="control-label"></label>
+                    <input asp-for="Movie.ReleaseDate" class="form-control" />
+                    <span asp-validation-for="Movie.ReleaseDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Movie.Genre" class="control-label"></label>
+                    <input asp-for="Movie.Genre" class="form-control" />
+                    <span asp-validation-for="Movie.Genre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Movie.Price" class="control-label"></label>
+                    <input asp-for="Movie.Price" class="form-control" />
+                    <span asp-validation-for="Movie.Price" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Movie.Rating" class="control-label"></label>
+                    <input asp-for="Movie.Rating" class="form-control" />
+                    <span asp-validation-for="Movie.Rating" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-page="./Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+```
+
+The app won't work until the database is updated to include the new field. Running the app without an update to the database throws a ``SqlException``:
+
+The ``SqlException`` exception is caused by the updated Movie model class being different than the schema of the Movie table of the database. There's no ``Rating`` column in the database table.
+
+There are a few approaches to resolving the error:
+
+1. Have the Entity Framework automatically drop and re-create the database using the new model class schema. This approach is convenient early in the development cycle, it allows developers to quickly evolve the model and database schema together. The downside is that existing data in the database is lost. Don't use this approach on a production database! Dropping the database on schema changes and using an initializer to automatically seed the database with test data is often a productive way to develop an app.
+2. Explicitly modify the schema of the existing database so that it matches the model classes. The advantage of this approach is to keep the data. Make this change either manually or by creating a database change script.
+3. Use Code First Migrations to update the database schema.
+
+Update the ``SeedData`` class so that it provides a value for the new column. A sample change is shown below, but make this change for each ``new Movie`` block.
+
+```csharp
+    context.Movie.AddRange(
+        new Movie
+        {
+            Title = "When Harry Met Sally",
+            ReleaseDate = DateTime.Parse("1989-2-12"),
+            Genre = "Romantic Comedy",
+            Price = 7.99M,
+            Rating = "R"
+        },
+        ...
+```
+
+Add a migration for the rating field
+
+From the **Tools** menu, select **NuGet Package Manager > Package Manager Console**.
+
+In the **PMC**, enter the following commands:
+
+```powershell
+    Add-Migration Rating
+    Update-Database
+```
+
+**Note:** I had to delete the database to get this working. You can do this from **SQL Server Object Explorer** and selecting the database and deleting from the menu option.
+
+The ``Add-Migration`` command tells the framework to:
+
+* Compare the ``Movie`` model with the ``Movie`` database schema.
+* Create code to migrate the database schema to the new model.
+
+The name "Rating" is arbitrary and is used to name the migration file. It's helpful to use a meaningful name for the migration file.
+
+The ``Update-Database`` command tells the framework to apply the schema changes to the database and to preserve existing data.
+
+Delete all the records in the database, the initializer will seed the database and include the ``Rating`` field. Deleting can be done with the delete links in the browser or from S[ql Server Object Explorer (SSOX)](https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/sql?view=aspnetcore-6.0#ssox).
+
+Another option is to delete the database and use migrations to re-create the database. To delete the database in SSOX:
+
+Select the database in SSOX.
+
+Right-click on the database, and select **Delete**.
+
+Check **Close existing connections**.
+
+Select **OK**.
+
+In the **PMC**, update the database:
+
+```powershell
+    Update-Database
+```
+
+Run the app and verify you can create, edit, and display movies with a ``Rating`` field. If the database isn't seeded, set a break point in the ``SeedData.Initialize`` method.
+
+## Add validation to Razor Pages
+
+In this section, validation logic is added to the ``Movie`` model. The validation rules are enforced any time a user creates or edits a movie.
+
+### Validation
+
+A key tenet of software development is called DRY ("Don't Repeat Yourself"). Razor Pages encourages development where functionality is specified once, and it's reflected throughout the app. DRY can help:
+
+* Reduce the amount of code in an app.
+* Make the code less error prone, and easier to test and maintain.
+
+The validation support provided by Razor Pages and Entity Framework is a good example of the DRY principle:
+
+* Validation rules are declaratively specified in one place, in the model class.
+* Rules are enforced everywhere in the app.
+
+### Add validation rules to the movie model
+
+The [System.ComponentModel.DataAnnotations](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations) namespace provides:
+
+* A set of built-in validation attributes that are applied declaratively to a class or property.
+* Formatting attributes like ``[DataType]`` that help with formatting and don't provide any validation.
+
+Update the ``Movie`` class to take advantage of the built-in ``[Required]``, ``[StringLength]``, ``[RegularExpression]``, and ``[Range]`` validation attributes.
+
+```csharp
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    namespace RazorPagesMovie.Models
+    {
+        public class Movie
+        {
+            public int ID { get; set; }
+
+            [StringLength(60, MinimumLength = 3)]
+            [Required]
+            public string Title { get; set; } = string.Empty;
+
+            [Display(Name = "Release Date")]
+            [DataType(DataType.Date)]
+            public DateTime ReleaseDate { get; set; }
+
+            [Range(1, 100)]
+            [DataType(DataType.Currency)]
+            [Column(TypeName = "decimal(18, 2)")]
+            public decimal Price { get; set; }
+
+            [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$")]
+            [Required]
+            [StringLength(30)]
+            public string Genre { get; set; } = string.Empty;
+
+            [RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s-]*$")]
+            [StringLength(5)]
+            [Required]
+            public string Rating { get; set; } = string.Empty;
+        }
+    }
+```
+
+The validation attributes specify behavior to enforce on the model properties they're applied to:
+
+* The ``[Required]`` and ``[MinimumLength]`` attributes indicate that a property must have a value. Nothing prevents a user from entering white space to satisfy this validation.
+
+* The ``[RegularExpression]`` attribute is used to limit what characters can be input. In the preceding code, ``Genre``:
+  * Must only use letters.
+  * The first letter is required to be uppercase. White spaces are allowed while numbers, and special characters are not allowed.
+* The ``RegularExpression`` ``Rating``:
+        * Requires that the first character be an uppercase letter.
+  * Allows special characters and numbers in subsequent spaces. "PG-13" is valid for a rating, but fails for a ``Genre``.
+* The ``[Range]`` attribute constrains a value to within a specified range.
+* The ``[StringLength]`` attribute can set a maximum length of a string property, and optionally its minimum length.
+* Value types, such as ``decimal``, ``int``, ``float``, ``DateTime``, are inherently required and don't need the ``[Required]`` attribute.
+
+The preceding validation rules are used for demonstration, they are not optimal for a production system. For example, the preceding prevents entering a movie with only two chars and doesn't allow special characters in ``Genre``.
+
+Having validation rules automatically enforced by ASP.NET Core helps:
+
+* Make the app more robust.
+* Reduce chances of saving invalid data to the database.
+
+### Validation Error UI in Razor Pages
+
+Run the app and navigate to ``Pages/Movies``.
+
+Select the **Create New** link. Complete the form with some invalid values. When jQuery client-side validation detects the error, it displays an error message.
+
+![Validation errors](assets/images/validation-error.jpg "Validation errors")
+
+Notice how the form has automatically rendered a validation error message in each field containing an invalid value. The errors are enforced both client-side, using JavaScript and jQuery, and server-side, when a user has JavaScript disabled.
+
+A significant benefit is that **no** code changes were necessary in the Create or Edit pages. Once data annotations were applied to the model, the validation UI was enabled. The Razor Pages created in this tutorial automatically picked up the validation rules, using validation attributes on the properties of the ``Movie`` model class. Test validation using the Edit page, the same validation is applied.
+
+The form data isn't posted to the server until there are no client-side validation errors. Verify form data isn't posted by one or more of the following approaches:
+
+* Put a break point in the OnPostAsync method. Submit the form by selecting Create or Save. The break point is never hit.
+* Use the Fiddler tool.
+* Use the browser developer tools to monitor network traffic.
+
+### Server-side validation
+
+When JavaScript is disabled in the browser, submitting the form with errors will post to the server.
+
+Optional, test server-side validation:
+
+1. Disable JavaScript in the browser. JavaScript can be disabled using browser's developer tools. If JavaScript cannot be disabled in the browser, try another browser.
+2. Set a break point in the ``OnPostAsync`` method of the Create or Edit page.
+3. Submit a form with invalid data.
+4. Verify the model state is invalid:
+
+```csharp
+    if (!ModelState.IsValid)
+    {
+       return Page();
+    }
+ ```
+
+ Alternatively, [Disable client-side validation](https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-6.0#disable-client-side-validation) on the server.
+
+The following code shows a portion of the ``Create.cshtml`` page scaffolded earlier in the tutorial. It's used by the Create and Edit pages to:
+
+* Display the initial form.
+* Redisplay the form in the event of an error.
+
+```html
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Movie.Title" class="control-label"></label>
+            <input asp-for="Movie.Title" class="form-control" />
+            <span asp-validation-for="Movie.Title" class="text-danger"></span>
+        </div>
+```
+
+The [Input Tag Helper](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0) uses the [DataAnnotations](https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/mvc-music-store/mvc-music-store-part-6) attributes and produces HTML attributes needed for jQuery Validation on the client-side. The [Validation Tag Helper](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0#the-validation-tag-helpers) displays validation errors. See [Validation](https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-6.0) for more information.
+
+The Create and Edit pages have no validation rules in them. The validation rules and the error strings are specified only in the ``Movie`` class. These validation rules are automatically applied to Razor Pages that edit the ``Movie`` model.
+
+When validation logic needs to change, it's done only in the model. Validation is applied consistently throughout the application, validation logic is defined in one place. Validation in one place helps keep the code clean, and makes it easier to maintain and update.
+
+### Use DataType Attributes
+
+Examine the ``Movie`` class. The ``System.ComponentModel.DataAnnotations`` namespace provides formatting attributes in addition to the built-in set of validation attributes. The ``[DataType]`` attribute is applied to the ``ReleaseDate`` and ``Price`` properties.
+
+```csharp
+    [Display(Name = "Release Date")]
+    [DataType(DataType.Date)]
+    public DateTime ReleaseDate { get; set; }
+
+    [Range(1, 100)]
+    [DataType(DataType.Currency)]
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal Price { get; set; }
+```
+
+The ``[DataType]`` attributes provide:
+
+* Hints for the view engine to format the data.
+* Supplies attributes such as ``<a>`` for URL's and ``<a href="mailto:EmailAddress.com">`` for email.
+
+Use the ``[RegularExpression]`` attribute to validate the format of the data. The ``[DataType]`` attribute is used to specify a data type that's more specific than the database intrinsic type. ``[DataType]`` attributes aren't validation attributes. In the sample application, only the date is displayed, without time.
+
+The ``DataType`` enumeration provides many data types, such as ``Date``, ``Time``, ``PhoneNumber``, ``Currency``, ``EmailAddress``, and more.
+
+The ``[DataType]`` attributes:
+
+* Can enable the application to automatically provide type-specific features. For example, a ``mailto:`` link can be created for ``DataType.EmailAddress``.
+* Can provide a date selector ``DataType.Date`` in browsers that support HTML5.
+* Emit HTML 5 ``data-``, pronounced "data dash", attributes that HTML 5 browsers consume.
+* Do **not** provide any validation.
+
+**Note:** I was unaware of HTML 5 ``data-``. Below is an example of using it.
+
+```html
+<h1>Secret agents</h1>
+
+<ul>
+    <li data-id="10784">Jason Walters, 003: Found dead in "A View to a Kill".</li>
+    <li data-id="97865">Alex Trevelyan, 006: Agent turned terrorist leader; James' nemesis in "Goldeneye".</li>
+    <li data-id="45732">James Bond, 007: The main man; shaken but not stirred.</li>
+</ul>
+```
+
+When you hover over one of the secret agents.
+
+![Data dash example](assets/images/data-dash-example.jpg "Data dash example")
+
+``DataType.Date`` doesn't specify the format of the date that's displayed. By default, the data field is displayed according to the default formats based on the server's ``CultureInfo``.
+
+The ``[Column(TypeName = "decimal(18, 2)")]`` data annotation is required so Entity Framework Core can correctly map ``Price`` to currency in the database. For more information, see [Data Types](https://docs.microsoft.com/en-us/ef/core/modeling/relational/data-types).
+
+The ``[DisplayFormat]`` attribute is used to explicitly specify the date format:
+
+```csharp
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+    public DateTime ReleaseDate { get; set; }
+```
+
+The ``ApplyFormatInEditMode`` setting specifies that the formatting will be applied when the value is displayed for editing. That behavior may not be wanted for some fields. For example, in currency values, the currency symbol is usually not wanted in the edit UI.
+
+The ``[DisplayFormat]`` attribute can be used by itself, but it's generally a good idea to use the ``[DataType]`` attribute. The ``[DataType]`` attribute conveys the semantics of the data as opposed to how to render it on a screen. The ``[DataType]`` attribute provides the following benefits that aren't available with ``[DisplayFormat]``:
+
+* The browser can enable HTML5 features, for example to show a calendar control, the locale-appropriate currency symbol, email links, etc.
+* By default, the browser renders data using the correct format based on its locale.
+* The ``[DataType]`` attribute can enable the ASP.NET Core framework to choose the right field template to render the data. The ``DisplayFormat``, if used by itself, uses the string template.
+
+**Note:** jQuery validation doesn't work with the ``[Range]`` attribute and ``DateTime``. For example, the following code will always display a client-side validation error, even when the date is in the specified range:
+
+```csharp
+    [Range(typeof(DateTime), "1/1/1966", "1/1/2020")]
+```
+
+It's a best practice to avoid compiling hard dates in models, so using the ``[Range]`` attribute and ``DateTime`` is discouraged. Use Configuration for date ranges and other values that are subject to frequent change rather than specifying it in code.
+
+The following code shows combining attributes on one line:
+
+```csharp
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    namespace RazorPagesMovie.Models
+    {
+        public class Movie
+        {
+            public int ID { get; set; }
+
+            [StringLength(60, MinimumLength = 3)]
+            public string Title { get; set; } = string.Empty;
+
+            [Display(Name = "Release Date"), DataType(DataType.Date)]
+            public DateTime ReleaseDate { get; set; }
+
+            [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$"), Required, StringLength(30)]
+            public string Genre { get; set; } = string.Empty;
+
+            [Range(1, 100), DataType(DataType.Currency)]
+            [Column(TypeName = "decimal(18, 2)")]
+            public decimal Price { get; set; }
+
+            [RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s-]*$"), StringLength(5)]
+            public string Rating { get; set; } = string.Empty;
+        }
+    }
+```
+
+[Get started with Razor Pages and EF Core](https://docs.microsoft.com/en-us/aspnet/core/data/ef-rp/intro?view=aspnetcore-6.0) shows advanced EF Core operations with Razor Pages.
+
+### Apply migrations
+
+The ``DataAnnotations`` applied to the class changes the schema. For example, the ``DataAnnotations`` applied to the ``Title`` field:
+
+```csharp
+    [StringLength(60, MinimumLength = 3)]
+    [Required]
+    public string Title { get; set; } = string.Empty;
+```
+
+* Limits the characters to 60.
+* Doesn't allow a ``null`` value.
+
+The ``Movie`` table currently has the following schema:
+
+```sql
+    CREATE TABLE [dbo].[Movie] (
+        [ID]          INT             IDENTITY (1, 1) NOT NULL,
+        [Title]       NVARCHAR (MAX)  NULL,
+        [ReleaseDate] DATETIME2 (7)   NOT NULL,
+        [Genre]       NVARCHAR (MAX)  NULL,
+        [Price]       DECIMAL (18, 2) NOT NULL,
+        [Rating]      NVARCHAR (MAX)  NULL,
+        CONSTRAINT [PK_Movie] PRIMARY KEY CLUSTERED ([ID] ASC)
+    );
+```
+
+The preceding schema changes don't cause EF to throw an exception. However, create a migration so the schema is consistent with the model.
+
+```powershell
+    Add-Migration New_DataAnnotations
+    Update-Database
+```
+
+``Update-Database`` runs the ``Up`` methods of the ``New_DataAnnotations`` class. Examine the ``Up`` method:
+
+```csharp
+    public partial class New_DataAnnotations : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<string>(
+                name: "Title",
+                table: "Movie",
+                type: "nvarchar(60)",
+                maxLength: 60,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+    
+            migrationBuilder.AlterColumn<string>(
+                name: "Rating",
+                table: "Movie",
+                type: "nvarchar(5)",
+                maxLength: 5,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+    
+            migrationBuilder.AlterColumn<string>(
+                name: "Genre",
+                table: "Movie",
+                type: "nvarchar(30)",
+                maxLength: 30,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+        }
+        ...
+    }
+```
+
+The updated ``Movie`` table has the following schema:
+
+```sql
+    CREATE TABLE [dbo].[Movie] (
+        [ID]          INT             IDENTITY (1, 1) NOT NULL,
+        [Title]       NVARCHAR (60)   NOT NULL,
+        [ReleaseDate] DATETIME2 (7)   NOT NULL,
+        [Genre]       NVARCHAR (30)   NOT NULL,
+        [Price]       DECIMAL (18, 2) NOT NULL,
+        [Rating]      NVARCHAR (5)    NOT NULL,
+        CONSTRAINT [PK_Movie] PRIMARY KEY CLUSTERED ([ID] ASC)
+    );
+```
+
+### Publish to Azure
+
+For information on deploying to Azure, see [Tutorial: Build an ASP.NET Core app in Azure with SQL Database](https://docs.microsoft.com/en-us/azure/app-service/tutorial-dotnetcore-sqldb-app).
+
+[Get started with Razor Pages and EF Core](https://docs.microsoft.com/en-us/aspnet/core/data/ef-rp/intro?view=aspnetcore-6.0) is an excellent follow up to this tutorial.
+
+### Additional resources
+
+* [Tag Helpers in forms in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0)
+* [Globalization and localization in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-6.0)
+* [Tag Helpers in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-6.0)
+* [Author Tag Helpers in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/authoring?view=aspnetcore-6.0)

@@ -3,6 +3,8 @@
         "appsettings",
         "HSTS",
         "Linq",
+        "minimise",
+        "mkdir",
         "preconfigured",
         "scaffolder",
         "SSOX"
