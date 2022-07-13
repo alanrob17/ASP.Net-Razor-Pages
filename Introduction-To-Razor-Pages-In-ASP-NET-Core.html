@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Introduction-To-Razor-Pages-In-ASP-NET-Core.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="introduction-to-razor-pages-in-aspnet-core">Introduction to Razor Pages in ASP.NET Core</h1>
+<p>Code: <code>Sandbox\RazorPagesContacts</code>.</p>
+<p>Razor Pages can make coding page-focused scenarios easier and more productive than using controllers and views.</p>
+<p>If you're looking for a tutorial that uses the Model-View-Controller approach, see <a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-6.0">Get started with ASP.NET Core MVC</a>.</p>
+<p>This document provides an introduction to Razor Pages. It's not a step by step tutorial.</p>
+<h2 id="create-a-razor-pages-project">Create a Razor Pages project</h2>
+<p>Razor Pages is enabled in <code>Program.cs</code>:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddRazorPages();
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+</div></code></pre>
+<p>In the preceding code:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.mvcservicecollectionextensions.addrazorpages">AddRazorPages</a> adds services for Razor Pages to the app.</li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.razorpagesendpointroutebuilderextensions.maprazorpages">MapRazorPages</a> adds endpoints for Razor Pages to the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.routing.iendpointroutebuilder">IEndpointRouteBuilder</a>.</li>
+</ul>
+<p>Consider a basic page:</p>
+<pre class="hljs"><code><div>    @page
+
+    &lt;h1&gt;Hello, world!&lt;/h1&gt;
+    &lt;h2&gt;The time <span class="hljs-keyword">on</span> the server <span class="hljs-keyword">is</span> @DateTime.Now&lt;/h2&gt;
+</div></code></pre>
+<p>The preceding code looks a lot like a <a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/adding-view?view=aspnetcore-6.0">Razor view file</a> used in an ASP.NET Core app with controllers and views. What makes it different is the <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-6.0#page">@page</a> directive. @page makes the file into an MVC action, which means that it handles requests directly, without going through a controller. @page must be the first Razor directive on a page. @page affects the behavior of other <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-6.0">Razor</a> constructs. Razor Pages file names have a <code>.cshtml</code> suffix.</p>
+<p>A similar page, using a PageModel class, is shown in the following two files. The <code>Pages/Index2.cshtml</code> file:</p>
+<pre class="hljs"><code><div>    @page
+    @using RazorPagesIntro.Pages
+    @model Index2Model
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Separate page model<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>
+        @Model.Message
+    <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</div></code></pre>
+<p>The <code>Pages/Index2.cshtml.cs</code> page model:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+    <span class="hljs-keyword">using</span> Microsoft.Extensions.Logging;
+    <span class="hljs-keyword">using</span> System;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesIntro.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Index2Model</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Message { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">private</span> <span class="hljs-keyword">set</span>; } = <span class="hljs-string">"PageModel in C#"</span>;
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+                Message += <span class="hljs-string">$" Server time is <span class="hljs-subst">{ DateTime.Now }</span>"</span>;
+            }
+        }
+    }
+</div></code></pre>
+<p><code>@Model</code> in the Razor page allows us to use data from the <code>PageModel</code>.</p>
+<p>By convention, the <code>PageModel</code> class file has the same name as the Razor Page file with <code>.cs</code> appended. For example, the previous Razor Page is <em>Pages/Index2.cshtml</em>. The file containing the <code>PageModel</code> class is named <em>Pages/Index2.cshtml.cs</em>.</p>
+<p>The associations of URL paths to pages are determined by the page's location in the file system. The following table shows a Razor Page path and the matching URL:</p>
+<table>
+<thead>
+<tr>
+<th>File name and path</th>
+<th>matching URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/Pages/Index.cshtml</td>
+<td>/ or /Index</td>
+</tr>
+<tr>
+<td>/Pages/Contact.cshtml</td>
+<td>/Contact</td>
+</tr>
+<tr>
+<td>/Pages/Store/Contact.cshtml</td>
+<td>/Store/Contact</td>
+</tr>
+<tr>
+<td>/Pages/Store/Index.cshtml</td>
+<td>/Store or /Store/Index</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>The runtime looks for Razor Pages files in the <em>Pages</em> folder by default.</li>
+<li><code>Index</code> is the default page when a URL doesn't include a page.</li>
+</ul>
+<h2 id="write-a-basic-form">Write a basic form</h2>
+<p>Razor Pages is designed to make common patterns used with web browsers easy to implement when building an app. Model binding, <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-6.0">Tag Helpers</a>, and HTML helpers work with the properties defined in a Razor Page class. Consider a page that implements a basic &quot;contact us&quot; form for the <code>Contact</code> model:</p>
+<p>For the samples in this document, the <code>DbContext</code> is initialized in the <em>Program.cs</em> file.</p>
+<p>The in memory database requires the <code>Microsoft.EntityFrameworkCore.InMemory</code> NuGet package.</p>
+<p>It also requires <code>using Microsoft.EntityFrameworkCore;</code> in the <code>PageModel</code> class.</p>
+<p>Add the <code>DbContext</code> to <code>Program.cs</code>.</p>
+<pre class="hljs"><code><div>    builder.Services.AddRazorPages();
+
+    builder.Services.AddDbContext&lt;CustomerDbContext&gt;(options =&gt;
+        options.UseInMemoryDatabase(<span class="hljs-string">"name"</span>));
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+</div></code></pre>
+<p>Create a <code>Models/Customer.cs</code> model.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> System.ComponentModel.DataAnnotations;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesContacts.Models</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Customer</span>
+        {
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Id { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">Required, StringLength(10)</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Name { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+        }
+    }
+</div></code></pre>
+<p>The <code>Data/CustomerDbContext.cs</code> db context:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesContacts.Data</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">CustomerDbContext</span> : <span class="hljs-title">DbContext</span>
+        {
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CustomerDbContext</span> (<span class="hljs-params">DbContextOptions&lt;CustomerDbContext&gt; options</span>)
+                : <span class="hljs-title">base</span>(<span class="hljs-params">options</span>)</span>
+            {
+            }
+
+            <span class="hljs-keyword">public</span> DbSet&lt;RazorPagesContacts.Models.Customer&gt; Customer =&gt; Set&lt;RazorPagesContacts.Models.Customer&gt;();
+        }
+    }
+</div></code></pre>
+<p>The <code>Pages/Customers/Create.cshtml</code> view file:</p>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesContacts.Pages.Customers.CreateModel
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    &lt;p&gt;Enter a customer name:&lt;/p&gt;
+
+    &lt;form method=<span class="hljs-string">"post"</span>&gt;
+        Name:
+        &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Customer!.Name"</span> /&gt;
+        &lt;input type=<span class="hljs-string">"submit"</span> /&gt;
+    &lt;/form&gt;
+</div></code></pre>
+<p>The <code>Pages/Customers/Create.cshtml.cs</code> page model:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">CreateModel</span> : <span class="hljs-title">PageModel</span>
+    {
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Data.CustomerDbContext _context;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CreateModel</span>(<span class="hljs-params">Data.CustomerDbContext context</span>)</span>
+        {
+            _context = context;
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+        {
+            <span class="hljs-keyword">return</span> Page();
+        }
+
+        [<span class="hljs-meta">BindProperty</span>]
+        <span class="hljs-keyword">public</span> Customer? Customer { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostAsync</span>(<span class="hljs-params"></span>)</span>
+        {
+            <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+            {
+                <span class="hljs-keyword">return</span> Page();
+            }
+
+            <span class="hljs-keyword">if</span> (Customer != <span class="hljs-literal">null</span>) _context.Customer.Add(Customer);
+            <span class="hljs-keyword">await</span> _context.SaveChangesAsync();
+
+            <span class="hljs-keyword">return</span> RedirectToPage(<span class="hljs-string">"./Index"</span>);
+        }
+    }
+</div></code></pre>
+<p>By convention, the <code>PageModel</code> class is called <code>&lt;PageName&gt;Model</code> and is in the same namespace as the page.</p>
+<p>The <code>PageModel</code> class allows separation of the logic of a page from its presentation. It defines page handlers for requests sent to the page and the data used to render the page. This separation allows:</p>
+<ul>
+<li>Managing of page dependencies through <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-6.0">dependency injection</a>.</li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/test/razor-pages-tests?view=aspnetcore-6.0">Unit testing</a></li>
+</ul>
+<p>The page has an <code>OnPostAsync</code> handler method, which runs on <code>POST</code> requests (when a user posts the form). Handler methods for any HTTP verb can be added. The most common handlers are:</p>
+<ul>
+<li><code>OnGet</code> to initialize state needed for the page. In the preceding code, the <code>OnGet</code> method displays the <code>CreateModel.cshtml</code> Razor Page.</li>
+<li><code>OnPost</code> to handle form submissions.</li>
+</ul>
+<p>The <code>Async</code> naming suffix is optional but is often used by convention for asynchronous functions. The preceding code is typical for Razor Pages.</p>
+<p>If you're familiar with ASP.NET apps using controllers and views:</p>
+<ul>
+<li>The <code>OnPostAsync</code> code in the preceding example looks similar to typical controller code.</li>
+<li>Most of the MVC primitives like model binding, <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-6.0">validation</a>, and action results work the same with Controllers and Razor Pages.</li>
+</ul>
+<p>The previous <code>OnPostAsync</code> method:</p>
+<pre class="hljs"><code><div>    [<span class="hljs-meta">BindProperty</span>]
+    <span class="hljs-keyword">public</span> Customer? Customer { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostAsync</span>(<span class="hljs-params"></span>)</span>
+    {
+        <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+        {
+            <span class="hljs-keyword">return</span> Page();
+        }
+
+        <span class="hljs-keyword">if</span> (Customer != <span class="hljs-literal">null</span>) _context.Customer.Add(Customer);
+        <span class="hljs-keyword">await</span> _context.SaveChangesAsync();
+
+        <span class="hljs-keyword">return</span> RedirectToPage(<span class="hljs-string">"./Index"</span>);
+    }
+</div></code></pre>
+<p>The basic flow of <code>OnPostAsync</code>:</p>
+<p>Check for validation errors.</p>
+<ul>
+<li>If there are no errors, save the data and redirect.</li>
+<li>If there are errors, show the page again with validation messages. In many cases, validation errors would be detected on the client, and never submitted to the server.</li>
+</ul>
+<p>The <code>Pages/Customers/Create.cshtml</code> view file:</p>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesContacts.Pages.Customers.CreateModel
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    &lt;p&gt;Enter a customer name:&lt;/p&gt;
+
+    &lt;form method=<span class="hljs-string">"post"</span>&gt;
+        Name:
+        &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Customer!.Name"</span> /&gt;
+        &lt;input type=<span class="hljs-string">"submit"</span> /&gt;
+    &lt;/form&gt;
+</div></code></pre>
+<p>The rendered HTML from <code>Pages/Customers/Create.cshtml</code>:</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Enter a customer name:<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">method</span>=<span class="hljs-string">"post"</span>&gt;</span>
+        Name:
+        <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">data-val</span>=<span class="hljs-string">"true"</span>
+               <span class="hljs-attr">data-val-length</span>=<span class="hljs-string">"The field Name must be a string with a maximum length of 10."</span>
+               <span class="hljs-attr">data-val-length-max</span>=<span class="hljs-string">"10"</span> <span class="hljs-attr">data-val-required</span>=<span class="hljs-string">"The Name field is required."</span>
+               <span class="hljs-attr">id</span>=<span class="hljs-string">"Customer_Name"</span> <span class="hljs-attr">maxlength</span>=<span class="hljs-string">"10"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"Customer.Name"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">""</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"submit"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"__RequestVerificationToken"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"hidden"</span>
+               <span class="hljs-attr">value</span>=<span class="hljs-string">"&lt;Antiforgery token here&gt;"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+</div></code></pre>
+<p>In the previous code, posting the form:</p>
+<ul>
+<li>
+<p>With valid data:</p>
+<ul>
+<li>The <code>OnPostAsync</code> handler method calls the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pagemodel.redirecttopage">RedirectToPage</a> helper method. RedirectToPage returns an instance of <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.redirecttopageresult">RedirectToPageResult</a>. <code>RedirectToPage</code>:</li>
+<li>Is an action result.</li>
+<li>Is similar to <code>RedirectToAction</code> or <code>RedirectToRoute</code> (used in controllers and views).</li>
+<li>Is customized for pages. In the preceding sample, it redirects to the root Index page (<code>/Index</code>). <code>RedirectToPage</code> is detailed in the <a href="https://docs.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-6.0&amp;tabs=visual-studio#url_gen">URL generation for Pages</a> section.</li>
+</ul>
+</li>
+<li>
+<p>With validation errors that are passed to the server:</p>
+<ul>
+<li>The <code>OnPostAsync</code> handler method calls the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pagebase.page">Page</a> helper method. <code>Page</code> returns an instance of <code>PageResult</code>. Returning Page is similar to how actions in controllers return <code>View</code>. <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pageresult">PageResult</a> is the default return type for a handler method. A handler method that returns <code>void</code> renders the page.</li>
+<li>In the preceding example, posting the form with no value results in <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.modelbinding.modelstatedictionary.isvalid#microsoft-aspnetcore-mvc-modelbinding-modelstatedictionary-isvalid">ModelState.IsValid</a> returning false. In this sample, no validation  errors are displayed on the client. Validation error handing is covered later in this document.</li>
+</ul>
+<pre class="hljs"><code><div>  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostAsync</span>(<span class="hljs-params"></span>)</span>
+  {
+      <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+      {
+          <span class="hljs-keyword">return</span> Page();
+      }
+      ...
+  }
+
+</div></code></pre>
+</li>
+</ul>
+<pre class="hljs"><code><div>
+* With validation errors detected by client side validation:
+
+    * Data is **not** posted to the server.
+    * Client-side validation is explained later in this document.
+
+The ``Customer`` property uses [[BindProperty](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.bindpropertyattribute)] attribute to opt in to model binding:
+
+```csharp
+    public IActionResult OnGet()
+    {
+        return Page();
+    }
+
+    [BindProperty]
+    public Customer? Customer { get; set; }
+
+    public async Task&lt;IActionResult&gt; OnPostAsync()
+    ...
+</div></code></pre>
+<p><code>[BindProperty]</code> should <strong>not</strong> be used on models containing properties that should not be changed by the client. For more information, see <a href="https://docs.microsoft.com/en-us/aspnet/core/data/ef-rp/crud?view=aspnetcore-6.0#overposting">Overposting</a>.</p>
+<p>Razor Pages, by default, bind properties only with non-<code>GET</code> verbs. Binding to properties removes the need to writing code to convert HTTP data to the model type. Binding reduces code by using the same property to render form fields (<code>&lt;input asp-for=&quot;Customer.Name&quot;&gt;</code>) and accept the input.</p>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p>For security reasons, you must opt in to binding <code>GET</code> request data to page model properties. Verify user input before mapping it to &gt; properties. Opting into <code>GET</code> binding is useful when addressing scenarios that rely on query string or route values.</p>
+<p>To bind a property on <code>GET</code> requests, set the [<code>BindProperty</code>] attribute's <code>SupportsGet</code> property to <code>true</code>:</p>
+<p><code>[BindProperty(SupportsGet = true)]</code></p>
+</blockquote>
+<p>Reviewing the <code>Pages/Customers/Create.cshtml</code> view file:</p>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesContacts.Pages.Customers.CreateModel
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    &lt;p&gt;Enter a customer name:&lt;/p&gt;
+
+    &lt;form method=<span class="hljs-string">"post"</span>&gt;
+        Name:
+        &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Customer!.Name"</span> /&gt;
+        &lt;input type=<span class="hljs-string">"submit"</span> /&gt;
+    &lt;/form&gt;
+</div></code></pre>
+<ul>
+<li>In the preceding code, the <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0#the-input-tag-helper">input tag helper</a> <code>&lt;input asp-for=&quot;Customer.Name&quot; /&gt;</code> binds the HTML <code>&lt;input&gt;</code> element to the <code>Customer.Name</code> model expression.</li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-6.0#addtaghelper-makes-tag-helpers-available">@addTagHelper</a> makes Tag Helpers available.</li>
+</ul>
+<h3 id="the-home-page">The home page</h3>
+<h4 id="pagescustomersindexcshtml">Pages/Customers/Index.cshtml</h4>
+<pre class="hljs"><code><div>    @page
+    @model RazorPagesContacts.Pages.Customers.IndexModel
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    &lt;h1&gt;Contacts home page&lt;/h1&gt;
+    &lt;form method=<span class="hljs-string">"post"</span>&gt;
+        &lt;table <span class="hljs-keyword">class</span>=<span class="hljs-string">"table"</span>&gt;
+            &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th&gt;ID&lt;/th&gt;
+                    &lt;th&gt;Name&lt;/th&gt;
+                    &lt;th&gt;&lt;/th&gt;
+                &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+            @<span class="hljs-keyword">if</span> (Model.Customers != <span class="hljs-literal">null</span>)
+            {
+                <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> contact <span class="hljs-keyword">in</span> Model.Customers)
+                {
+                    &lt;tr&gt;
+                        &lt;td&gt; @contact.Id &lt;/td&gt;
+                        &lt;td&gt;@contact.Name&lt;/td&gt;
+                        &lt;td&gt;
+                            &lt;!-- &lt;snippet_Edit&gt; --&gt;
+                            &lt;a asp-page=<span class="hljs-string">"./Edit"</span> asp-route-id=<span class="hljs-string">"@contact.Id"</span>&gt;Edit&lt;/a&gt; |
+                            &lt;!-- &lt;/snippet_Edit&gt; --&gt;
+                            &lt;!-- &lt;snippet_Delete&gt; --&gt;
+                            &lt;button type=<span class="hljs-string">"submit"</span> asp-page-handler=<span class="hljs-string">"delete"</span> asp-route-id=<span class="hljs-string">"@contact.Id"</span>&gt;delete&lt;/button&gt;
+                            &lt;!-- &lt;/snippet_Delete&gt; --&gt;
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                }
+            }
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+        &lt;a asp-page=<span class="hljs-string">"Create"</span>&gt;Create New&lt;/a&gt;
+    &lt;/form&gt;
+</div></code></pre>
+<h4 id="pagescustomersindexcshtmlcs">Pages/Customers/Index.cshtml.cs</h4>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> RazorPagesContacts.Models;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesContacts.Pages.Customers</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">IndexModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Data.CustomerDbContext _context;
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">IndexModel</span>(<span class="hljs-params">Data.CustomerDbContext context</span>)</span>
+            {
+                _context = context;
+            }
+
+            <span class="hljs-keyword">public</span> IList&lt;Customer&gt;? Customers { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">OnGetAsync</span>(<span class="hljs-params"></span>)</span>
+            {
+                Customers = <span class="hljs-keyword">await</span> _context.Customer.ToListAsync();
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostDeleteAsync</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> id</span>)</span>
+            {
+                <span class="hljs-keyword">var</span> contact = <span class="hljs-keyword">await</span> _context.Customer.FindAsync(id);
+
+                <span class="hljs-keyword">if</span> (contact != <span class="hljs-literal">null</span>)
+                {
+                    _context.Customer.Remove(contact);
+                    <span class="hljs-keyword">await</span> _context.SaveChangesAsync();
+                }
+
+                <span class="hljs-keyword">return</span> RedirectToPage();
+            }
+        }
+    }
+</div></code></pre>
+<p>The <code>Index.cshtml</code> file contains the following markup:</p>
+<pre class="hljs"><code><div>    &lt;a asp-page=<span class="hljs-string">"./Edit"</span> asp-route-id=<span class="hljs-string">"@contact.Id"</span>&gt;Edit&lt;/a&gt; |
+</div></code></pre>
+<p>The <code>&lt;a /a&gt;</code> <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/built-in/anchor-tag-helper?view=aspnetcore-6.0">Anchor Tag Helper</a> used the <code>asp-route-{value}</code> attribute to generate a link to the <code>Edit</code> page. The link contains route data with the contact ID. For example, <code>https://localhost:7241/Edit/1</code>. <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-6.0">Tag Helpers</a> enable server-side code to participate in creating and rendering HTML elements in Razor files.</p>
+<p>The <code>Index.cshtml</code> file contains markup to create a delete button for each customer contact:</p>
+<pre class="hljs"><code><div>    &lt;button type=<span class="hljs-string">"submit"</span> asp-page-handler=<span class="hljs-string">"delete"</span> asp-route-id=<span class="hljs-string">"@contact.Id"</span>&gt;delete&lt;/button&gt;
+</div></code></pre>
+<p>The rendered HTML:</p>
+<pre class="hljs"><code><div>    &lt;button type=<span class="hljs-string">"submit"</span> formaction=<span class="hljs-string">"/Customers?id=1&amp;amp;handler=delete"</span>&gt;delete&lt;/button&gt;
+</div></code></pre>
+<p>When the delete button is rendered in HTML, its <a href="https://developer.mozilla.org/docs/Web/HTML/Element/button#attr-formaction">formaction</a> includes parameters for:</p>
+<ul>
+<li>The customer contact ID, specified by the <code>asp-route-id</code> attribute.</li>
+<li>The handler, specified by the <code>asp-page-handler</code> attribute.</li>
+</ul>
+<p>When the button is selected, a form POST request is sent to the server. By convention, the name of the handler method is selected based on the value of the handler parameter according to the scheme OnPost[handler]Async.</p>
+<p>Because the handler is delete in this example, the <code>OnPostDeleteAsync</code> handler method is used to process the <code>POST</code> request. If the <code>asp-page-handler</code> is set to a different value, such as <code>remove</code>, a handler method with the name <code>OnPostRemoveAsync</code> is selected.</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostDeleteAsync</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> id</span>)</span>
+    {
+        <span class="hljs-keyword">var</span> contact = <span class="hljs-keyword">await</span> _context.Customer.FindAsync(id);
+
+        <span class="hljs-keyword">if</span> (contact != <span class="hljs-literal">null</span>)
+        {
+            _context.Customer.Remove(contact);
+
+            <span class="hljs-keyword">await</span> _context.SaveChangesAsync();
+        }
+
+        <span class="hljs-keyword">return</span> RedirectToPage();
+    }
+</div></code></pre>
+<p>The <code>OnPostDeleteAsync</code> method:</p>
+<ul>
+<li>Gets the <code>id</code> from the query string.</li>
+<li>Queries the database for the customer contact with <code>FindAsync</code>.</li>
+<li>If the customer contact is found, it's removed and the database is updated.</li>
+<li>Calls <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pagemodel.redirecttopage">RedirectToPage</a> to redirect to the root Index page (<code>/Index</code>).</li>
+</ul>
+
+</body>
+</html>
