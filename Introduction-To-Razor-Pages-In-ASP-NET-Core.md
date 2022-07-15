@@ -306,7 +306,7 @@ In the previous code, posting the form:
   * The ``OnPostAsync`` handler method calls the [Page](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pagebase.page) helper method. ``Page`` returns an instance of ``PageResult``. Returning Page is similar to how actions in controllers return ``View``. [PageResult](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.pageresult) is the default return type for a handler method. A handler method that returns ``void`` renders the page.
   * In the preceding example, posting the form with no value results in [ModelState.IsValid](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.modelbinding.modelstatedictionary.isvalid#microsoft-aspnetcore-mvc-modelbinding-modelstatedictionary-isvalid) returning false. In this sample, no validation  errors are displayed on the client. Validation error handing is covered later in this document.
 
-  ```csharp
+```csharp
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
@@ -315,13 +315,12 @@ In the previous code, posting the form:
         }
         ...
     }
-
 ```
 
 * With validation errors detected by client side validation:
 
-    * Data is **not** posted to the server.
-    * Client-side validation is explained later in this document.
+  * Data is **not** posted to the server.
+  * Client-side validation is explained later in this document.
 
 The ``Customer`` property uses [[BindProperty](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.bindpropertyattribute)] attribute to opt in to model binding:
 
@@ -756,3 +755,244 @@ If other projects are utilized, such as NuGet packages or [Razor class libraries
 
 * References the styles using CSS imports.
 * Isn't published as a static web asset of the app that consumes the styles.
+
+### XSRF/CSRF and Razor Pages
+
+Razor Pages are protected by [Antiforgery validation](https://docs.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-6.0). The [FormTagHelper](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-6.0#the-form-tag-helper) injects antiforgery tokens into HTML form elements.
+
+## Using Layouts, partials, templates, and Tag Helpers with Razor Pages
+
+Pages work with all the capabilities of the Razor view engine. Layouts, partials, templates, Tag Helpers, ``_ViewStart.cshtml``, and ``_ViewImports.cshtml`` work in the same way they do for conventional Razor views.
+
+Let's declutter this page by taking advantage of some of those capabilities.
+
+Add a [layout page](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout?view=aspnetcore-6.0) to ``Pages/Shared/_Layout.cshtml``:
+
+```csharp
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>RP Sample</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    </head>
+    <body>
+        <a asp-page="/Index">Home</a>
+        <a asp-page="/Customers/Create">Create</a>
+        <a asp-page="/Customers/Index">Customers</a> <br />
+
+        @RenderBody()
+        
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </body>
+    </html>
+```
+
+The Layout:
+
+Controls the layout of each page (unless the page opts out of layout).
+Imports HTML structures such as JavaScript and stylesheets.
+The contents of the Razor page are rendered where ``@RenderBody()`` is called.
+For more information, see l[ayout page](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout?view=aspnetcore-6.0).
+
+```csharp
+    @{
+        Layout = "_Layout";
+    }
+```
+
+The layout is in the *Pages/Shared* folder. Pages look for other views (layouts, templates, partials) hierarchically, starting in the same folder as the current page. A layout in the *Pages/Shared* folder can be used from any Razor page under the *Pages* folder.
+
+The layout file should go in the *Pages/Shared* folder.
+
+We recommend you not put the layout file in the Views/Shared folder. Views/Shared is an MVC views pattern. Razor Pages are meant to rely on folder hierarchy, not path conventions.
+
+View search from a Razor Page includes the *Pages* folder. The layouts, templates, and partials used with MVC controllers and conventional Razor views *just* work.
+
+Add a ``Pages/_ViewImports.cshtml`` file:
+
+```csharp
+    @namespace RazorPagesContacts.Pages
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+```
+
+``@namespace`` is explained later in the tutorial. The ``@addTagHelper`` directive brings in the built-in [Tag Helpers](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/built-in/?view=aspnetcore-6.0) to all the pages in the Pages folder.
+
+The ``@namespace`` directive set on a page:
+
+```csharp
+    @page
+    @namespace RazorPagesIntro.Pages.Customers
+
+    @model NameSpaceModel
+
+    <h2>Name space</h2>
+    <p>
+        @Model.Message
+    </p>
+```
+
+The ``@namespace`` directive sets the namespace for the page. The ``@model`` directive doesn't need to include the namespace.
+
+When the ``@namespace`` directive is contained in ``_ViewImports.cshtml``, the specified namespace supplies the prefix for the generated namespace in the Page that imports the ``@namespace`` directive. The rest of the generated namespace (the suffix portion) is the dot-separated relative path between the folder containing ``_ViewImports.cshtml`` and the folder containing the page.
+
+For example, the ``PageModel`` class ``Pages/Customers/Edit.cshtml.cs`` explicitly sets the namespace:
+
+```csharp
+    namespace RazorPagesContacts.Pages
+    {
+        public class EditModel : PageModel
+        {
+            private readonly AppDbContext _db;
+
+            public EditModel(AppDbContext db)
+            {
+                _db = db;
+            }
+
+            // Code removed for brevity.
+        }
+    }
+```
+
+The ``Pages/_ViewImports.cshtml`` file sets the following namespace:
+
+```csharp
+    @namespace RazorPagesContacts.Pages
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+```
+
+The generated namespace for the ``Pages/Customers/Edit.cshtml`` Razor Page is the same as the ``PageModel`` class.
+
+``@namespace`` *also works with conventional Razor views*.
+
+Consider the ``Pages/Customers/Create.cshtml`` view file:
+
+```csharp
+    @page
+    @model RazorPagesContacts.Pages.Customers.CreateModel
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    <p>Validation: customer name:</p>
+
+    <form method="post">
+        <div asp-validation-summary="ModelOnly"></div>
+        <span asp-validation-for="Customer.Name"></span>
+        Name:
+        <input asp-for="Customer.Name" />
+        <input type="submit" />
+    </form>
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+```
+
+The updated ``Pages/Customers/Create.cshtml`` view file with ``_ViewImports.cshtml`` and the preceding layout file:
+
+```csharp
+    @page
+    @model CreateModel
+
+    <p>Enter a customer name:</p>
+
+    <form method="post">
+        Name:
+        <input asp-for="Customer.Name" />
+        <input type="submit" />
+    </form>
+```
+
+In the preceding code, the ``_ViewImports.cshtml`` imported the namespace and ``Tag Helpers``. The layout file imported the JavaScript files.
+
+The [Razor Pages starter project](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-6.0&tabs=visual-studio#rpvs17) contains the ``Pages/_ValidationScriptsPartial.cshtml``, which hooks up client-side validation.
+
+For more information on partial views, see [Partial views in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/partial?view=aspnetcore-6.0).
+
+## URL generation for Pages
+
+The ``Create`` page, shown previously, uses ``RedirectToPage``:
+
+```csharp
+    public class CreateModel : PageModel
+    {
+        private readonly CustomerDbContext _context;
+
+        public CreateModel(CustomerDbContext context)
+        {
+            _context = context;
+        }
+
+        public IActionResult OnGet()
+        {
+            return Page();
+        }
+
+        [BindProperty]
+        public Customer Customer { get; set; }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            _context.Customers.Add(Customer);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("./Index");
+        }
+    }
+```
+
+The app has the following file/folder structure:
+
+* /Pages
+
+  * Index.cshtml
+
+  * Privacy.cshtml
+
+  * /Customers
+
+    * Create.cshtml
+
+    * Edit.cshtml
+
+    * Index.cshtml
+
+The ``Pages/Customers/Create.cshtml`` and ``Pages/Customers/Edit.cshtml`` pages redirect to ``Pages/Customers/Index.cshtml`` after success. The string ``./Index`` is a relative page name used to access the preceding page. It is used to generate URLs to the ``Pages/Customers/Index.cshtml`` page. For example:
+
+* ``Url.Page("./Index", ...)``
+* ``<a asp-page="./Index">Customers Index Page</a>``
+* ``RedirectToPage("./Index")``
+
+The page name is the path to the page from the root */Pages* folder including a leading ``/`` (for example, ``/Index``). The preceding URL generation samples offer enhanced options and functional capabilities over hard-coding a URL. URL generation uses routing and can generate and encode parameters according to how the route is defined in the destination path.
+
+URL generation for pages supports relative names. The following table shows which Index page is selected using different ``RedirectToPage`` parameters in ``Pages/Customers/Create.cshtml``.
+
+| RedirectToPage(x)	         | Page                     |
+|----------------------------|--------------------------|
+| RedirectToPage("/Index")   | *Pages/Index*            |     
+| RedirectToPage("./Index"); | *Pages/Customers/Index*  |
+| RedirectToPage("../Index") | *Pages/Index*            |
+| RedirectToPage("Index")	 | *Pages/Customers/*       |
+
+``RedirectToPage("Index")``, ``RedirectToPage("./Index")``, and ``RedirectToPage("../Index")`` are *relative names*. The ``RedirectToPage`` parameter is combined with the path of the current page to compute the name of the destination page.
+
+Relative name linking is useful when building sites with a complex structure. When relative names are used to link between pages in a folder:
+
+* Renaming a folder doesn't break the relative links.
+* Links are not broken because they don't include the folder name.
+
+To redirect to a page in a different [Area](https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas?view=aspnetcore-6.0), specify the area:
+
+```csharp
+    RedirectToPage("/Index", new { area = "Services" });
+```
+
+For more information, see [Areas in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas?view=aspnetcore-6.0) and [Razor Pages route and app conventions in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/razor-pages-conventions?view=aspnetcore-6.0).
+
+## ViewData attribute
