@@ -1244,6 +1244,306 @@ For more information, see l<a href="https://docs.microsoft.com/en-us/aspnet/core
 </div></code></pre>
 <p>For more information, see <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas?view=aspnetcore-6.0">Areas in ASP.NET Core</a> and <a href="https://docs.microsoft.com/en-us/aspnet/core/razor-pages/razor-pages-conventions?view=aspnetcore-6.0">Razor Pages route and app conventions in ASP.NET Core</a>.</p>
 <h2 id="viewdata-attribute">ViewData attribute</h2>
+<p>Data can be passed to a page with <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewdataattribute">ViewDataAttribute</a>. Properties with the <code>[ViewData]</code> attribute have their values stored and loaded from the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewfeatures.viewdatadictionary">ViewDataDictionary</a>.</p>
+<p>In the following example, the <code>AboutModel</code> applies the <code>[ViewData]</code> attribute to the <code>Title</code> property:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AboutModel</span> : <span class="hljs-title">PageModel</span>
+    {
+        [<span class="hljs-meta">ViewData</span>]
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Title { <span class="hljs-keyword">get</span>; } = <span class="hljs-string">"About"</span>;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+        {
+        }
+    }
+</div></code></pre>
+<p>In the Abo<code>ut page, access the</code>Title`` property as a model property:</p>
+<pre class="hljs"><code><div>    &lt;h1&gt;@Model.Title&lt;/h1&gt;
+</div></code></pre>
+<p>In the layout, the title is read from the ViewData dictionary:</p>
+<pre class="hljs"><code><div>    &lt;!DOCTYPE html&gt;
+    &lt;html lang=<span class="hljs-string">"en"</span>&gt;
+    &lt;head&gt;
+        &lt;title&gt;@ViewData[<span class="hljs-string">"Title"</span>] - WebApplication&lt;/title&gt;
+        ...
+</div></code></pre>
+<h2 id="tempdata">TempData</h2>
+<p>ASP.NET Core exposes the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controller.tempdata#microsoft-aspnetcore-mvc-controller-tempdata">TempData</a>. This property stores data until it's read. The <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewfeatures.tempdatadictionary.keep">Keep</a> and <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewfeatures.tempdatadictionary.peek">Peek</a> methods can be used to examine the data without deletion. <code>TempData</code> is useful for redirection, when data is needed for more than a single request.</p>
+<p>The following code sets the value of <code>Message</code> using <code>TempData</code>:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">CreateDotModel</span> : <span class="hljs-title">PageModel</span>
+    {
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> AppDbContext _db;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CreateDotModel</span>(<span class="hljs-params">AppDbContext db</span>)</span>
+        {
+            _db = db;
+        }
+
+        [<span class="hljs-meta">TempData</span>]
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Message { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+        [<span class="hljs-meta">BindProperty</span>]
+        <span class="hljs-keyword">public</span> Customer Customer { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostAsync</span>(<span class="hljs-params"></span>)</span>
+        {
+            <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+            {
+                <span class="hljs-keyword">return</span> Page();
+            }
+
+            _db.Customers.Add(Customer);
+
+            <span class="hljs-keyword">await</span> _db.SaveChangesAsync();
+
+            Message = <span class="hljs-string">$"Customer <span class="hljs-subst">{Customer.Name}</span> added"</span>;
+
+            <span class="hljs-keyword">return</span> RedirectToPage(<span class="hljs-string">"./Index"</span>);
+        }
+    }
+</div></code></pre>
+<p>The following markup in the <code>Pages/Customers/Index.cshtml</code> file displays the value of Message using <code>TempData</code>.</p>
+<pre class="hljs"><code><div>    &lt;h3&gt;Msg: @Model.Message&lt;/h3&gt;
+</div></code></pre>
+<p>The <code>Pages/Customers/Index.cshtml.cs</code> page model applies the <code>[TempData]</code> attribute to the <code>Message</code> property.</p>
+<pre class="hljs"><code><div>    [<span class="hljs-meta">TempData</span>]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Message { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+</div></code></pre>
+<p>For more information, see <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-6.0#tempdata">TempData</a>.</p>
+<h2 id="multiple-handlers-per-page">Multiple handlers per page</h2>
+<p>The following page generates markup for two handlers using the asp-page-handler <code>Tag Helper</code>:</p>
+<pre class="hljs"><code><div>    @page
+    @model CreateFATHModel
+
+    &lt;html&gt;
+    &lt;body&gt;
+        &lt;p&gt;
+            Enter your name.
+        &lt;/p&gt;
+        &lt;div asp-validation-summary=<span class="hljs-string">"All"</span>&gt;&lt;/div&gt;
+        &lt;form method=<span class="hljs-string">"POST"</span>&gt;
+            &lt;div&gt;Name: &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Customer.Name"</span> /&gt;&lt;/div&gt;
+            &lt;!-- &lt;snippet_Handlers&gt; --&gt;
+            &lt;input type=<span class="hljs-string">"submit"</span> asp-page-handler=<span class="hljs-string">"JoinList"</span> <span class="hljs-keyword">value</span>=<span class="hljs-string">"Join"</span> /&gt;
+            &lt;input type=<span class="hljs-string">"submit"</span> asp-page-handler=<span class="hljs-string">"JoinListUC"</span> <span class="hljs-keyword">value</span>=<span class="hljs-string">"JOIN UC"</span> /&gt;
+            &lt;!-- &lt;/snippet_Handlers&gt; --&gt;
+        &lt;/form&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+</div></code></pre>
+<p>The form in the preceding example has two submit buttons, each using the <code>FormActionTagHelper</code> to submit to a different URL. The <code>asp-page-handler</code> attribute is a companion to <code>asp-page</code>. <code>asp-page-handler</code> generates URLs that submit to each of the handler methods defined by a page. <code>asp-page</code> isn't specified because the sample is linking to the current page.</p>
+<p>The page model:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> System.Threading.Tasks;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+    <span class="hljs-keyword">using</span> RazorPagesContacts.Data;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">RazorPagesContacts.Pages.Customers</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">CreateFATHModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> AppDbContext _db;
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CreateFATHModel</span>(<span class="hljs-params">AppDbContext db</span>)</span>
+            {
+                _db = db;
+            }
+
+            [<span class="hljs-meta">BindProperty</span>]
+            <span class="hljs-keyword">public</span> Customer Customer { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostJoinListAsync</span>(<span class="hljs-params"></span>)</span>
+            {
+                <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+                {
+                    <span class="hljs-keyword">return</span> Page();
+                }
+
+                _db.Customers.Add(Customer);
+                <span class="hljs-keyword">await</span> _db.SaveChangesAsync();
+                <span class="hljs-keyword">return</span> RedirectToPage(<span class="hljs-string">"/Index"</span>);
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">OnPostJoinListUCAsync</span>(<span class="hljs-params"></span>)</span>
+            {
+                <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+                {
+                    <span class="hljs-keyword">return</span> Page();
+                }
+                Customer.Name = Customer.Name?.ToUpperInvariant();
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> OnPostJoinListAsync();
+            }
+        }
+    }
+</div></code></pre>
+<p>The preceding code uses <em>named handler methods</em>. Named handler methods are created by taking the text in the name after <code>On&lt;HTTP Verb&gt;</code> and before <code>Async</code> (if present). In the preceding example, the page methods are <code>OnPostJoinListAsync</code> and <code>OnPostJoinListUCAsync</code>. With <code>OnPost</code> and <code>Async</code> removed, the handler names are <code>JoinList</code> and <code>JoinListUC</code>.</p>
+<pre class="hljs"><code><div>    &lt;input type=<span class="hljs-string">"submit"</span> asp-page-handler=<span class="hljs-string">"JoinList"</span> <span class="hljs-keyword">value</span>=<span class="hljs-string">"Join"</span> /&gt;
+    &lt;input type=<span class="hljs-string">"submit"</span> asp-page-handler=<span class="hljs-string">"JoinListUC"</span> <span class="hljs-keyword">value</span>=<span class="hljs-string">"JOIN UC"</span> /&gt;
+</div></code></pre>
+<p>Using the preceding code, the URL path that submits to <code>OnPostJoinListAsync</code> is <code>https://localhost:5001/Customers/CreateFATH?handler=JoinList</code>. The URL path that submits to <code>OnPostJoinListUCAsync</code> is <code>https://localhost:5001/Customers/CreateFATH?handler=JoinListUC</code>.</p>
+<h2 id="custom-routes">Custom routes</h2>
+<p>Use the <code>@page</code> directive to:</p>
+<p>Specify a custom route to a page. For example, the route to the About page can be set to /Some/Other/Path with <code>@page &quot;/Some/Other/Path&quot;</code>.<br>
+Append segments to a page's default route. For example, an &quot;item&quot; segment can be added to a page's default route with <code>@page &quot;item&quot;</code>.<br>
+Append parameters to a page's default route. For example, an ID parameter, <code>id</code>, can be required for a page with <code>@page &quot;{id}&quot;</code>.<br>
+A root-relative path designated by a tilde (<code>~</code>) at the beginning of the path is supported. For example, <code>@page &quot;~/Some/Other/Path&quot;</code> is the same as <code>@page &quot;/Some/Other/Path&quot;</code>.</p>
+<p>If you don't like the query string <code>?handler=JoinList</code> in the URL, change the route to put the handler name in the path portion of the URL. The route can be customized by adding a route template enclosed in double quotes after the <code>@page</code> directive.</p>
+<pre class="hljs"><code><div>    @page <span class="hljs-string">"{handler?}"</span>
+    @model CreateRouteModel
+
+    &lt;html&gt;
+    &lt;body&gt;
+        &lt;p&gt;
+            Enter your name.
+        &lt;/p&gt;
+        &lt;div asp-validation-summary=<span class="hljs-string">"All"</span>&gt;&lt;/div&gt;
+        &lt;form method=<span class="hljs-string">"POST"</span>&gt;
+            &lt;div&gt;Name: &lt;input asp-<span class="hljs-keyword">for</span>=<span class="hljs-string">"Customer.Name"</span> /&gt;&lt;/div&gt;
+            &lt;input type=<span class="hljs-string">"submit"</span> asp-page-handler=<span class="hljs-string">"JoinList"</span> <span class="hljs-keyword">value</span>=<span class="hljs-string">"Join"</span> /&gt;
+            &lt;input type=<span class="hljs-string">"submit"</span> asp-page-handler=<span class="hljs-string">"JoinListUC"</span> <span class="hljs-keyword">value</span>=<span class="hljs-string">"JOIN UC"</span> /&gt;
+        &lt;/form&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+</div></code></pre>
+<p>Using the preceding code, the URL path that submits to <code>OnPostJoinListAsync</code> is <code>https://localhost:5001/Customers/CreateFATH/JoinList</code>. The URL path that submits to <code>OnPostJoinListUCAsync</code> is <code>https://localhost:5001/Customers/CreateFATH/JoinListUC</code>.</p>
+<p>The <code>?</code> following handler means the route parameter is optional.</p>
+<h2 id="advanced-configuration-and-settings">Advanced configuration and settings</h2>
+<p>The configuration and settings in following sections is not required by most apps.</p>
+<p>To configure advanced options, use the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.mvcservicecollectionextensions.addrazorpages">AddRazorPages</a> overload that configures <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.razorpagesoptions">RazorPagesOptions</a>:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> RazorPagesContacts.Data;
+    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddRazorPages(options =&gt;
+    {
+        options.RootDirectory = <span class="hljs-string">"/MyPages"</span>;
+        options.Conventions.AuthorizeFolder(<span class="hljs-string">"/MyPages/Admin"</span>);
+    });
+
+    builder.Services.AddDbContext&lt;CustomerDbContext&gt;(options =&gt;
+        options.UseInMemoryDatabase(<span class="hljs-string">"name"</span>));
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+</div></code></pre>
+<p>Use the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.razorpagesoptions">RazorPagesOptions</a> to set the root directory for pages, or add application model conventions for pages. For more information on conventions, see <a href="https://docs.microsoft.com/en-us/aspnet/core/security/authorization/razor-pages-authorization?view=aspnetcore-6.0">Razor Pages authorization conventions</a>.</p>
+<p>To precompile views, see <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-6.0">Razor view compilation</a>.</p>
+<h2 id="specify-that-razor-pages-are-at-the-content-root">Specify that Razor Pages are at the content root</h2>
+<p>By default, Razor Pages are rooted in the <em>/Pages</em> directory. Add <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.mvcrazorpagesmvcbuilderextensions.withrazorpagesatcontentroot">WithRazorPagesAtContentRoot</a> to specify that your Razor Pages are at the <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/?view=aspnetcore-6.0#content-root">content root</a> ([ContentRootPath(<a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.ihostingenvironment.contentrootpath#microsoft-aspnetcore-hosting-ihostingenvironment-contentrootpath">https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.ihostingenvironment.contentrootpath#microsoft-aspnetcore-hosting-ihostingenvironment-contentrootpath</a>)]) of the app:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> RazorPagesContacts.Data;
+    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddRazorPages(options =&gt;
+    {
+        options.Conventions.AuthorizeFolder(<span class="hljs-string">"/MyPages/Admin"</span>);
+    })
+      .WithRazorPagesAtContentRoot();
+
+    builder.Services.AddDbContext&lt;CustomerDbContext&gt;(options =&gt;
+        options.UseInMemoryDatabase(<span class="hljs-string">"name"</span>));
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+</div></code></pre>
+<h2 id="specify-that-razor-pages-are-at-a-custom-root-directory">Specify that Razor Pages are at a custom root directory</h2>
+<p>Add <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.mvcrazorpagesmvccorebuilderextensions.withrazorpagesroot">WithRazorPagesRoot</a> to specify that Razor Pages are at a custom root directory in the app (provide a relative path):</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+    <span class="hljs-keyword">using</span> RazorPagesContacts.Data;
+    
+    <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddRazorPages(options =&gt;
+    {
+        options.Conventions.AuthorizeFolder(<span class="hljs-string">"/MyPages/Admin"</span>);
+    })
+      .WithRazorPagesRoot(<span class="hljs-string">"/path/to/razor/pages"</span>);
+
+    builder.Services.AddDbContext&lt;CustomerDbContext&gt;(options =&gt;
+        options.UseInMemoryDatabase(<span class="hljs-string">"name"</span>));
+
+    <span class="hljs-keyword">var</span> app = builder.Build();
+
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+</div></code></pre>
+<h2 id="additional-resources">Additional resources</h2>
+<ul>
+<li>See <a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/razor-pages-start?view=aspnetcore-6.0">Get started with Razor Pages</a>, which builds on this introduction.</li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/security/authorization/simple?view=aspnetcore-6.0#aarp">Authorize attribute and Razor Pages</a></li>
+<li><a href="https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/razor-pages/index/3.0sample">Download or view sample code</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-6.0">Overview of ASP.NET Core</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-6.0">Razor syntax reference for ASP.NET Core</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas?view=aspnetcore-6.0">Areas in ASP.NET Core</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/razor-pages-start?view=aspnetcore-6.0">Tutorial: Get started with Razor Pages in ASP.NET Core</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/security/authorization/razor-pages-authorization?view=aspnetcore-6.0">Razor Pages authorization conventions in ASP.NET Core</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/razor-pages/razor-pages-conventions?view=aspnetcore-6.0">Razor Pages route and app conventions in ASP.NET Core</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/test/razor-pages-tests?view=aspnetcore-6.0">Razor Pages unit tests in ASP.NET Core</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/partial?view=aspnetcore-6.0">Partial views in ASP.NET Core</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/components/prerendering-and-integration?view=aspnetcore-6.0">Prerender and integrate ASP.NET Core Razor components</a></li>
+</ul>
+<h3 id="recommended-content">Recommended content</h3>
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout">Layout in ASP.NET Core</a><br>
+Learn how to use common layouts, share directives, and run common code before rendering views in an ASP.NET Core app.</p>
+<p><a href="https://docs.microsoft.com/en-us/dotnet/architecture/porting-existing-aspnet-apps/comparing-razor-pages-aspnet-mvc">Compare Razor Pages to ASP.NET MVC</a><br>
+Learn how Razor Pages offer a better way to organize responsibilities than the traditional ASP.NET MVC approach.</p>
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/overview">Views in ASP.NET Core MVC</a><br>
+Learn how views handle the app's data presentation and user interaction in ASP.NET Core MVC.</p>
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/th-components">Tag Helper Components in ASP.NET Core</a><br>
+Learn what Tag Helper Components are and how to use them in ASP.NET Core.</p>
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro">Tag Helpers in ASP.NET Core</a><br>
+Learn what Tag Helpers are and how to use them in ASP.NET Core.</p>
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/built-in/anchor-tag-helper">Anchor Tag Helper in ASP.NET Core</a><br>
+Discover the ASP.NET Core Anchor Tag Helper attributes and the role each attribute plays in extending behavior of the HTML anchor tag.</p>
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/validation">Part 9, add validation to an ASP.NET Core MVC app</a><br>
+Part 9 of tutorial series on ASP.NET Core MVC.</p>
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms">Tag Helpers in forms in ASP.NET Core</a><br>
+Describes the built-in Tag Helpers used with Forms.</p>
 
 </body>
 </html>

@@ -996,3 +996,369 @@ To redirect to a page in a different [Area](https://docs.microsoft.com/en-us/asp
 For more information, see [Areas in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas?view=aspnetcore-6.0) and [Razor Pages route and app conventions in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/razor-pages-conventions?view=aspnetcore-6.0).
 
 ## ViewData attribute
+
+Data can be passed to a page with [ViewDataAttribute](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewdataattribute). Properties with the ``[ViewData]`` attribute have their values stored and loaded from the [ViewDataDictionary](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewfeatures.viewdatadictionary).
+
+In the following example, the ``AboutModel`` applies the ``[ViewData]`` attribute to the ``Title`` property:
+
+```csharp
+    public class AboutModel : PageModel
+    {
+        [ViewData]
+        public string Title { get; } = "About";
+
+        public void OnGet()
+        {
+        }
+    }
+```
+
+In the Abo``ut page, access the``Title`` property as a model property:
+
+```
+    <h1>@Model.Title</h1>
+```
+
+In the layout, the title is read from the ViewData dictionary:
+
+```csharp
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title>@ViewData["Title"] - WebApplication</title>
+        ...
+```
+
+## TempData
+
+ASP.NET Core exposes the [TempData](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controller.tempdata#microsoft-aspnetcore-mvc-controller-tempdata). This property stores data until it's read. The [Keep](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewfeatures.tempdatadictionary.keep) and [Peek](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.viewfeatures.tempdatadictionary.peek) methods can be used to examine the data without deletion. ``TempData`` is useful for redirection, when data is needed for more than a single request.
+
+The following code sets the value of ``Message`` using ``TempData``:
+
+```csharp
+    public class CreateDotModel : PageModel
+    {
+        private readonly AppDbContext _db;
+
+        public CreateDotModel(AppDbContext db)
+        {
+            _db = db;
+        }
+
+        [TempData]
+        public string Message { get; set; }
+
+        [BindProperty]
+        public Customer Customer { get; set; }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            _db.Customers.Add(Customer);
+
+            await _db.SaveChangesAsync();
+
+            Message = $"Customer {Customer.Name} added";
+
+            return RedirectToPage("./Index");
+        }
+    }
+```
+
+The following markup in the ``Pages/Customers/Index.cshtml`` file displays the value of Message using ``TempData``.
+
+```csharp
+    <h3>Msg: @Model.Message</h3>
+```
+
+The ``Pages/Customers/Index.cshtml.cs`` page model applies the ``[TempData]`` attribute to the ``Message`` property.
+
+```csharp
+    [TempData]
+    public string Message { get; set; }
+```
+
+For more information, see [TempData](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-6.0#tempdata).
+
+## Multiple handlers per page
+
+The following page generates markup for two handlers using the asp-page-handler ``Tag Helper``:
+
+```csharp
+    @page
+    @model CreateFATHModel
+
+    <html>
+    <body>
+        <p>
+            Enter your name.
+        </p>
+        <div asp-validation-summary="All"></div>
+        <form method="POST">
+            <div>Name: <input asp-for="Customer.Name" /></div>
+            <!-- <snippet_Handlers> -->
+            <input type="submit" asp-page-handler="JoinList" value="Join" />
+            <input type="submit" asp-page-handler="JoinListUC" value="JOIN UC" />
+            <!-- </snippet_Handlers> -->
+        </form>
+    </body>
+    </html>
+```
+
+The form in the preceding example has two submit buttons, each using the ``FormActionTagHelper`` to submit to a different URL. The ``asp-page-handler`` attribute is a companion to ``asp-page``. ``asp-page-handler`` generates URLs that submit to each of the handler methods defined by a page. ``asp-page`` isn't specified because the sample is linking to the current page.
+
+The page model:
+
+```csharp
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using RazorPagesContacts.Data;
+
+    namespace RazorPagesContacts.Pages.Customers
+    {
+        public class CreateFATHModel : PageModel
+        {
+            private readonly AppDbContext _db;
+
+            public CreateFATHModel(AppDbContext db)
+            {
+                _db = db;
+            }
+
+            [BindProperty]
+            public Customer Customer { get; set; }
+
+            public async Task<IActionResult> OnPostJoinListAsync()
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Page();
+                }
+
+                _db.Customers.Add(Customer);
+                await _db.SaveChangesAsync();
+                return RedirectToPage("/Index");
+            }
+
+            public async Task<IActionResult> OnPostJoinListUCAsync()
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Page();
+                }
+                Customer.Name = Customer.Name?.ToUpperInvariant();
+                return await OnPostJoinListAsync();
+            }
+        }
+    }
+```
+
+The preceding code uses *named handler methods*. Named handler methods are created by taking the text in the name after ``On<HTTP Verb>`` and before ``Async`` (if present). In the preceding example, the page methods are ``OnPostJoinListAsync`` and ``OnPostJoinListUCAsync``. With ``OnPost`` and ``Async`` removed, the handler names are ``JoinList`` and ``JoinListUC``.
+
+```csharp
+    <input type="submit" asp-page-handler="JoinList" value="Join" />
+    <input type="submit" asp-page-handler="JoinListUC" value="JOIN UC" />
+```
+
+Using the preceding code, the URL path that submits to ``OnPostJoinListAsync`` is ``https://localhost:5001/Customers/CreateFATH?handler=JoinList``. The URL path that submits to ``OnPostJoinListUCAsync`` is ``https://localhost:5001/Customers/CreateFATH?handler=JoinListUC``.
+
+## Custom routes
+
+Use the ``@page`` directive to:
+
+Specify a custom route to a page. For example, the route to the About page can be set to /Some/Other/Path with ``@page "/Some/Other/Path"``.
+Append segments to a page's default route. For example, an "item" segment can be added to a page's default route with ``@page "item"``.
+Append parameters to a page's default route. For example, an ID parameter, ``id``, can be required for a page with ``@page "{id}"``.
+A root-relative path designated by a tilde (``~``) at the beginning of the path is supported. For example, ``@page "~/Some/Other/Path"`` is the same as ``@page "/Some/Other/Path"``.
+
+If you don't like the query string ``?handler=JoinList`` in the URL, change the route to put the handler name in the path portion of the URL. The route can be customized by adding a route template enclosed in double quotes after the ``@page`` directive.
+
+```csharp
+    @page "{handler?}"
+    @model CreateRouteModel
+
+    <html>
+    <body>
+        <p>
+            Enter your name.
+        </p>
+        <div asp-validation-summary="All"></div>
+        <form method="POST">
+            <div>Name: <input asp-for="Customer.Name" /></div>
+            <input type="submit" asp-page-handler="JoinList" value="Join" />
+            <input type="submit" asp-page-handler="JoinListUC" value="JOIN UC" />
+        </form>
+    </body>
+    </html>
+```
+
+Using the preceding code, the URL path that submits to ``OnPostJoinListAsync`` is ``https://localhost:5001/Customers/CreateFATH/JoinList``. The URL path that submits to ``OnPostJoinListUCAsync`` is ``https://localhost:5001/Customers/CreateFATH/JoinListUC``.
+
+The ``?`` following handler means the route parameter is optional.
+
+## Advanced configuration and settings
+
+The configuration and settings in following sections is not required by most apps.
+
+To configure advanced options, use the [AddRazorPages](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.mvcservicecollectionextensions.addrazorpages) overload that configures [RazorPagesOptions](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.razorpagesoptions):
+
+```csharp
+    using Microsoft.EntityFrameworkCore;
+    using RazorPagesContacts.Data;
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddRazorPages(options =>
+    {
+        options.RootDirectory = "/MyPages";
+        options.Conventions.AuthorizeFolder("/MyPages/Admin");
+    });
+
+    builder.Services.AddDbContext<CustomerDbContext>(options =>
+        options.UseInMemoryDatabase("name"));
+
+    var app = builder.Build();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+```
+
+Use the [RazorPagesOptions](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.razorpages.razorpagesoptions) to set the root directory for pages, or add application model conventions for pages. For more information on conventions, see [Razor Pages authorization conventions](https://docs.microsoft.com/en-us/aspnet/core/security/authorization/razor-pages-authorization?view=aspnetcore-6.0).
+
+To precompile views, see [Razor view compilation](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-6.0).
+
+## Specify that Razor Pages are at the content root
+
+By default, Razor Pages are rooted in the */Pages* directory. Add [WithRazorPagesAtContentRoot](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.mvcrazorpagesmvcbuilderextensions.withrazorpagesatcontentroot) to specify that your Razor Pages are at the [content root](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/?view=aspnetcore-6.0#content-root) ([ContentRootPath(<https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.ihostingenvironment.contentrootpath#microsoft-aspnetcore-hosting-ihostingenvironment-contentrootpath>)]) of the app:
+
+```csharp
+    using Microsoft.EntityFrameworkCore;
+    using RazorPagesContacts.Data;
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddRazorPages(options =>
+    {
+        options.Conventions.AuthorizeFolder("/MyPages/Admin");
+    })
+      .WithRazorPagesAtContentRoot();
+
+    builder.Services.AddDbContext<CustomerDbContext>(options =>
+        options.UseInMemoryDatabase("name"));
+
+    var app = builder.Build();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+```
+
+## Specify that Razor Pages are at a custom root directory
+
+Add [WithRazorPagesRoot](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.mvcrazorpagesmvccorebuilderextensions.withrazorpagesroot) to specify that Razor Pages are at a custom root directory in the app (provide a relative path):
+
+```csharp
+    using Microsoft.EntityFrameworkCore;
+    using RazorPagesContacts.Data;
+    
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddRazorPages(options =>
+    {
+        options.Conventions.AuthorizeFolder("/MyPages/Admin");
+    })
+      .WithRazorPagesRoot("/path/to/razor/pages");
+
+    builder.Services.AddDbContext<CustomerDbContext>(options =>
+        options.UseInMemoryDatabase("name"));
+
+    var app = builder.Build();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+
+    app.Run();
+```
+
+## Additional resources
+
+* See [Get started with Razor Pages](https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/razor-pages-start?view=aspnetcore-6.0), which builds on this introduction.
+* [Authorize attribute and Razor Pages](https://docs.microsoft.com/en-us/aspnet/core/security/authorization/simple?view=aspnetcore-6.0#aarp)
+* [Download or view sample code](https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/razor-pages/index/3.0sample)
+* [Overview of ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-6.0)
+* [Razor syntax reference for ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-6.0)
+* [Areas in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/areas?view=aspnetcore-6.0)
+* [Tutorial: Get started with Razor Pages in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/razor-pages-start?view=aspnetcore-6.0)
+* [Razor Pages authorization conventions in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/security/authorization/razor-pages-authorization?view=aspnetcore-6.0)
+* [Razor Pages route and app conventions in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/razor-pages-conventions?view=aspnetcore-6.0)
+* [Razor Pages unit tests in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/test/razor-pages-tests?view=aspnetcore-6.0)
+* [Partial views in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/partial?view=aspnetcore-6.0)
+* [Prerender and integrate ASP.NET Core Razor components](https://docs.microsoft.com/en-us/aspnet/core/blazor/components/prerendering-and-integration?view=aspnetcore-6.0)
+
+### Recommended content
+
+[Layout in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/layout)
+Learn how to use common layouts, share directives, and run common code before rendering views in an ASP.NET Core app.
+
+[Compare Razor Pages to ASP.NET MVC](https://docs.microsoft.com/en-us/dotnet/architecture/porting-existing-aspnet-apps/comparing-razor-pages-aspnet-mvc)
+Learn how Razor Pages offer a better way to organize responsibilities than the traditional ASP.NET MVC approach.
+
+[Views in ASP.NET Core MVC](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/overview)
+Learn how views handle the app's data presentation and user interaction in ASP.NET Core MVC.
+
+[Tag Helper Components in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/th-components)
+Learn what Tag Helper Components are and how to use them in ASP.NET Core.
+
+[Tag Helpers in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro)
+Learn what Tag Helpers are and how to use them in ASP.NET Core.
+
+[Anchor Tag Helper in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/built-in/anchor-tag-helper)
+Discover the ASP.NET Core Anchor Tag Helper attributes and the role each attribute plays in extending behavior of the HTML anchor tag.
+
+[Part 9, add validation to an ASP.NET Core MVC app](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/validation)
+Part 9 of tutorial series on ASP.NET Core MVC.
+
+[Tag Helpers in forms in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms)
+Describes the built-in Tag Helpers used with Forms.
