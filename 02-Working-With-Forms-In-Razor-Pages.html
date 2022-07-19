@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>02-Working-With-Forms-In-Razor-Pages.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="working-with-forms-in-razor-pages">Working with Forms in Razor Pages</h1>
+<h2 id="one-way-data-binding">One way data binding</h2>
+<p>The following file has hard coded data. We are going to change this with one way data binding.</p>
+<h3 id="moviescshtml">Movies.cshtml</h3>
+<pre class="hljs"><code><div>    @page
+    @model MoviesApp.Pages.MoviesModel
+    @{
+        ViewData[<span class="hljs-string">"Title"</span>] = <span class="hljs-string">"List of all movies"</span>;
+    }
+
+    &lt;h3&gt;@ViewData[<span class="hljs-string">"Title"</span>]&lt;/h3&gt;
+    &lt;hr /&gt;
+
+    &lt;table <span class="hljs-keyword">class</span>=<span class="hljs-string">"table table-striped"</span>&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;<span class="hljs-meta">#&lt;/th&gt;</span>
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Title&lt;/th&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Rate&lt;/th&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Actions&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            &lt;tr&gt;
+                &lt;th scope=<span class="hljs-string">"row"</span>&gt;<span class="hljs-number">1</span>&lt;/th&gt;
+                &lt;td&gt;Mark <span class="hljs-keyword">is</span> example movie title&lt;/td&gt;
+                &lt;td&gt;<span class="hljs-number">9</span>/<span class="hljs-number">10</span>&lt;/td&gt;
+                &lt;td&gt;&lt;a href=<span class="hljs-string">"/Movie/6"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"btn btn-secondary"</span>&gt;Show details&lt;/a&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                ...
+            &lt;/tr&gt;
+
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;div style=<span class="hljs-string">"position: fixed; bottom: 70px;right:25px;"</span>&gt;
+        &lt;a href=<span class="hljs-string">"/AddMovie"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"btn btn-success"</span>&gt;Add <span class="hljs-keyword">new</span>&lt;/a&gt;
+    &lt;/div&gt;
+</div></code></pre>
+<p>Create the folders <code>Data/Models</code>.</p>
+<p>Create a class named <code>Movie</code>.</p>
+<h3 id="moviecs">Movie.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Data.Models</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Movie</span>
+        {
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Id { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Title { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Rate { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Description { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+        }
+    }
+</div></code></pre>
+<p>In the <code>Movies.cshtml.cs</code> model we will add the data binding.</p>
+<p>We create a list of movies.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">public</span> List&lt;Movie&gt; Movies { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+</div></code></pre>
+<p>This will give you an error so we have to add the following <code>using</code> statement.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
+</div></code></pre>
+<p><strong>Note:</strong> you have to make the <code>List&lt;Movie&gt;</code> <code>public</code> so that it can be see in the view.</p>
+<p>When you want to send data from the <code>Model</code> to the <code>View</code> you need to use the <code>OnGet()</code> method.</p>
+<p>When you want to get data from the <code>View</code> to the <code>Model</code> you have to use the <code>OnPost()</code> method.</p>
+<p>In <code>OnGet()</code> create a list of Movies.</p>
+<h3 id="moviescshtmlcs">Movies.cshtml.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">MoviesModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">public</span> List&lt;Movie&gt; Movies { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+                Movies = <span class="hljs-keyword">new</span> List&lt;Movie&gt;()
+                {
+                    <span class="hljs-keyword">new</span> Movie()
+                    {
+                        Id = <span class="hljs-number">1</span>,
+                        Title = <span class="hljs-string">"First movie"</span>,
+                        Rate = <span class="hljs-number">8</span>,
+                        Description = <span class="hljs-string">"This is the first movie."</span>
+                    },
+                    <span class="hljs-keyword">new</span> Movie()
+                    {
+                        Id = <span class="hljs-number">2</span>,
+                        Title = <span class="hljs-string">"Second movie"</span>,
+                        Rate = <span class="hljs-number">8</span>,
+                        Description = <span class="hljs-string">"This is the second movie."</span>
+                    },
+                    <span class="hljs-keyword">new</span> Movie()
+                    {
+                        Id = <span class="hljs-number">3</span>,
+                        Title = <span class="hljs-string">"Third movie"</span>,
+                        Rate = <span class="hljs-number">8</span>,
+                        Description = <span class="hljs-string">"This is the third movie."</span>
+                    },
+                    <span class="hljs-keyword">new</span> Movie()
+                    {
+                        Id = <span class="hljs-number">4</span>,
+                        Title = <span class="hljs-string">"Fourth movie"</span>,
+                        Rate = <span class="hljs-number">8</span>,
+                        Description = <span class="hljs-string">"This is the fourth movie."</span>
+                    }
+                };
+            }
+        }
+    }
+</div></code></pre>
+<p>Now, we need to take out the hard coded data in <code>Movies.cshtml</code> and replace it with the one way model binding from the Model.</p>
+<h3 id="moviescshtml">Movies.cshtml</h3>
+<pre class="hljs"><code><div>    @page
+    @model MoviesApp.Pages.MoviesModel
+
+    @{
+        ViewData[<span class="hljs-string">"Title"</span>] = <span class="hljs-string">"List of all movies"</span>;
+    }
+
+    &lt;h3&gt;@ViewData[<span class="hljs-string">"Title"</span>]&lt;/h3&gt;
+    &lt;hr /&gt;
+
+    &lt;table <span class="hljs-keyword">class</span>=<span class="hljs-string">"table table-striped"</span>&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;<span class="hljs-meta">#&lt;/th&gt;</span>
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Title&lt;/th&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Rate&lt;/th&gt;
+                &lt;th scope=<span class="hljs-string">"col"</span>&gt;Actions&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+
+            @<span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> movie <span class="hljs-keyword">in</span> Model.Movies)
+            {
+                &lt;tr&gt;
+                    &lt;th scope=<span class="hljs-string">"row"</span>&gt;@movie.Id&lt;/th&gt;
+                    &lt;td&gt;@movie.Title&lt;/td&gt;
+                    &lt;td&gt;@movie.Rate/<span class="hljs-number">10</span>&lt;/td&gt;
+                    &lt;td&gt;@movie.Description&lt;/td&gt;
+                    &lt;td&gt;&lt;a href=<span class="hljs-string">"/Movie/@movie.Id"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"btn btn-secondary"</span>&gt;Show details&lt;/a&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+            }
+
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;div style=<span class="hljs-string">"position: fixed; bottom: 70px;right:25px;"</span>&gt;
+        &lt;a href=<span class="hljs-string">"/AddMovie"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"btn btn-success"</span>&gt;Add <span class="hljs-keyword">new</span>&lt;/a&gt;
+    &lt;/div&gt;
+</div></code></pre>
+<p>When we run the program we get the following result.</p>
+<p><img src="assets/images/movies-list-view.jpg" alt="List of movies" title="List of movies"></p>
+<h2 id="two-way-data-binding">Two way data binding</h2>
+<p>Forms use two way data binding. We will build the Add Movie page so we can add data to a form and get data from a form.</p>
+<p>The form will use the <code>OnPost()</code> method to data from the Razor Form (<code>View</code>).</p>
+<p>In our <code>PageModel</code> we are going to use properties to gather our data.</p>
+<h3 id="addmoviecshtmlcs">AddMovie.cshtml.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AddMovieModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Title { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Rate { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Description { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+                Title = <span class="hljs-string">"My new movie"</span>;
+            }
+        }
+    }
+</div></code></pre>
+<p>In our code we can initialise data with the <code>OnGet()</code> method. In our case we could create a new <code>Title</code>.</p>
+<p>Now we will add the model to our AddMovie.cshtml view.</p>
+<h3 id="addmoviecshtml">AddMovie.cshtml</h3>
+<pre class="hljs"><code><div>    @page
+    @model MoviesApp.Pages.AddMovieModel
+    @{
+        ViewData[<span class="hljs-string">"Title"</span>] = <span class="hljs-string">"Add new movie"</span>;
+    }
+
+    &lt;h3&gt;@ViewData[<span class="hljs-string">"Title"</span>]&lt;/h3&gt;
+    &lt;hr /&gt;
+
+    &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"row"</span>&gt;
+        &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"col-md-6 offset-3"</span>&gt;
+            &lt;form method=<span class="hljs-string">"post"</span>&gt;
+                &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"mb-3"</span>&gt;
+                    &lt;label <span class="hljs-keyword">for</span>=<span class="hljs-string">"title"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-label"</span>&gt;Title&lt;/label&gt;
+                    &lt;input name=<span class="hljs-string">"Title"</span> type=<span class="hljs-string">"text"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"title"</span> placeholder=<span class="hljs-string">"Movie title"</span>&gt;
+                &lt;/div&gt;
+                &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"mb-3"</span>&gt;
+                    &lt;label <span class="hljs-keyword">for</span>=<span class="hljs-string">"rate"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-label"</span>&gt;Rate&lt;/label&gt;
+                    &lt;input name=<span class="hljs-string">"Rate"</span> type=<span class="hljs-string">"number"</span> min=<span class="hljs-string">"1"</span> max=<span class="hljs-string">"10"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"rate"</span> placeholder=<span class="hljs-string">"9"</span>&gt;
+                &lt;/div&gt;
+                &lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"mb-3"</span>&gt;
+                    &lt;label <span class="hljs-keyword">for</span>=<span class="hljs-string">"description"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-label"</span>&gt;Description&lt;/label&gt;
+                    &lt;textarea name=<span class="hljs-string">"Description"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"description"</span> rows=<span class="hljs-string">"3"</span>&gt;&lt;/textarea&gt;
+                &lt;/div&gt;
+
+                &lt;button type=<span class="hljs-string">"submit"</span> <span class="hljs-keyword">class</span>=<span class="hljs-string">"btn btn-success"</span>&gt;Add Movie&lt;/button&gt;
+            &lt;/form&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+</div></code></pre>
+<p>We have added <code>name</code> values to each field. These relate to our properties in the model.</p>
+<p><strong>Note:</strong> we have to change the form to accept a <code>post</code> method.</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">method</span>=<span class="hljs-string">"post"</span>&gt;</span>
+        ```
+
+Go back to the ``PageModel`` and we need to add an ``OnPost()`` method to receive a request.
+
+```csharp
+    public IActionResult OnPost()
+    {
+        string value = $"{Title} - {Rate}/10 - {Description}";
+
+        return Page();
+    }
+</div></code></pre>
+<p>Add a break point on the <code>return Page();</code> statement and debug the code.</p>
+<p>When we hit the return page statement we hover over the <code>value</code> variable and we see that there is no data present.</p>
+<p>The reason is that when we use this method we can only send data to the view. If we want these properties to be bi-directional we have to use <strong>binding</strong>.</p>
+<p>To do this we have to use a decorator named <code>BindProperty</code> on each of our fields.</p>
+<h3 id="addmoviecshtmlcs">AddMovie.cshtml.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AddMovieModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            [<span class="hljs-meta">BindProperty</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Title { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">BindProperty</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Rate { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">BindProperty</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Description { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+                Title = <span class="hljs-string">"My new movie"</span>;
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPost</span>(<span class="hljs-params"></span>)</span>
+            {
+                <span class="hljs-keyword">string</span> <span class="hljs-keyword">value</span> = <span class="hljs-string">$"<span class="hljs-subst">{Title}</span> - <span class="hljs-subst">{Rate}</span>/10 - <span class="hljs-subst">{Description}</span>"</span>;
+
+                <span class="hljs-keyword">return</span> Page();
+            }
+        }
+    }
+</div></code></pre>
+<p>Debug the code again and this time when you over over the variable, <code>value</code> you will see.</p>
+<p><img src="assets/images/locals.jpg" alt="Local variables" title="Local variables"></p>
+<p>So if you want variable to persist from the <code>View</code> to the <code>PageModel</code> you will have to use binding.</p>
+<h2 id="event-binding">Event binding</h2>
+<p>Add a page handler to the AddMovie Razor page. This allows us to bind on user events.</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">h3</span>&gt;</span>@ViewData["Title"]<span class="hljs-tag">&lt;/<span class="hljs-name">h3</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">hr</span> /&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">asp-page-handler</span>=<span class="hljs-string">"MyOnClick"</span>&gt;</span> Click me<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"row"</span>&gt;</span>
+        ```
+
+On the PageModel add a new method.
+
+```csharp
+    public void OnGetMyOnClick()
+    {
+        string stopHere = string.Empty;
+    }
+</div></code></pre>
+<p>Add a breakpoint on the <code>stopHere</code> statement and start debugging. Once you hover over the <code>Click me</code> link you will see the link below.</p>
+<p><img src="assets/images/page-handler.jpg" alt="Page handler" title="Page handler"></p>
+<p>When you click the link you can see that you are transported to the page handler method, <code>OnGetMyOnClick()</code> so everything is working as anticipated.</p>
+<h2 id="model-binding-in-aspnet-razor-pages">Model Binding in ASP.Net Razor pages</h2>
+<p>The way we used binding in the previous example isn't sustainable. Suppose we had 30 properties then it would be hard to manage. This is where model binding is a better option.</p>
+<p>Add a <code>Movie</code> model to the <code>PageModel</code>.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AddMovieModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            <span class="hljs-keyword">public</span> Movie? Movie { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPost</span>(<span class="hljs-params"></span>)</span>
+            {
+                <span class="hljs-keyword">string</span> <span class="hljs-keyword">value</span> = <span class="hljs-string">$"<span class="hljs-subst">{Title}</span> - <span class="hljs-subst">{Rate}</span>/10 - <span class="hljs-subst">{Description}</span>"</span>;
+
+                <span class="hljs-keyword">return</span> Page();
+            }
+        }
+    }
+</div></code></pre>
+<p><strong>Note:</strong> you have to add the following <code>using</code> reference.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
+</div></code></pre>
+<p>This allows you to use the <code>Movie</code> model.</p>
+<p>On the <code>AddModel.cshtml</code> Razor page change the fields to reflect the Model.</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">method</span>=<span class="hljs-string">"post"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"mb-3"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"title"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-label"</span>&gt;</span>Title<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"Movie.Title"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"title"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"Movie title"</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"mb-3"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"rate"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-label"</span>&gt;</span>Rate<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"Movie.Rate"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"number"</span> <span class="hljs-attr">min</span>=<span class="hljs-string">"1"</span> <span class="hljs-attr">max</span>=<span class="hljs-string">"10"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"rate"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"9"</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"mb-3"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"description"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-label"</span>&gt;</span>Description<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">textarea</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"Movie.Description"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"description"</span> <span class="hljs-attr">rows</span>=<span class="hljs-string">"3"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">textarea</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"submit"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"btn btn-success"</span>&gt;</span>Add Movie<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+</div></code></pre>
+<p>Now change the PageModel <code>OnPost()</code> method.</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPost</span>(<span class="hljs-params"></span>)</span>
+    {
+        <span class="hljs-keyword">string</span> <span class="hljs-keyword">value</span> = <span class="hljs-string">$"<span class="hljs-subst">{Movie.Title}</span> - <span class="hljs-subst">{Movie.Rate}</span>/10 - <span class="hljs-subst">{Movie.Description}</span>"</span>;
+        <span class="hljs-keyword">return</span> Page();
+    }
+</div></code></pre>
+<p>And add a breakpoint on the value statement and debug.</p>
+<p>When you hover over <code>value</code> you get a null value. All of the Movie values get a null exception because once again you need to bind to the <code>Movie</code> model.</p>
+<p>Add.</p>
+<pre class="hljs"><code><div>    [<span class="hljs-meta">BindProperty</span>]
+    <span class="hljs-keyword">public</span> Movie? Movie { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+</div></code></pre>
+<p>And debug again.</p>
+<p><img src="assets/images/local-values-model.jpg" alt="Binding to a model" title="Binding to a model"></p>
+<h2 id="form-validation">Form validation</h2>
+<p>When working with forms it is important that you validate the form data before you store it in a database.</p>
+<p>In our example you will learn how to validate on the back end and show any errors on the front end.</p>
+<p>You need to add a validation message on every form field.</p>
+<p>In <code>AddMovie.cshtml</code>.</p>
+<pre class="hljs"><code><div>    <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">method</span>=<span class="hljs-string">"post"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"mb-3"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"title"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-label"</span>&gt;</span>Title<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"Movie.Title"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"title"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"Movie title"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">asp-validation-for</span>=<span class="hljs-string">"@Model.Movie.Title"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"text-danger"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"mb-3"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"rate"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-label"</span>&gt;</span>Rate<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"Movie.Rate"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"number"</span> <span class="hljs-attr">min</span>=<span class="hljs-string">"1"</span> <span class="hljs-attr">max</span>=<span class="hljs-string">"10"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"rate"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"9"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">asp-validation-for</span>=<span class="hljs-string">"@Model.Movie.Rate"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"text-danger"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"mb-3"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"description"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-label"</span>&gt;</span>Description<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">textarea</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"Movie.Description"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"description"</span> <span class="hljs-attr">rows</span>=<span class="hljs-string">"3"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">textarea</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">asp-validation-for</span>=<span class="hljs-string">"@Model.Movie.Description"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"text-danger"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"submit"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"btn btn-success"</span>&gt;</span>Add Movie<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+</div></code></pre>
+<p>We will change the <code>Movie</code> model.</p>
+<h3 id="datamodelsmoviecs">Data/Models/Movie.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> System.ComponentModel.DataAnnotations;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Data.Models</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Movie</span>
+        {
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Id { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">Required, StringLength(50)</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Title { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">Required</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Rate { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">Required, StringLength(50)</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span>? Description { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+        }
+    }
+</div></code></pre>
+<p>In the <code>PageModel</code>.</p>
+<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPost</span>(<span class="hljs-params"></span>)</span>
+    {
+         <span class="hljs-keyword">string</span> <span class="hljs-keyword">value</span> = <span class="hljs-string">$"<span class="hljs-subst">{Movie.Title}</span> - <span class="hljs-subst">{Movie.Rate}</span>/10 - <span class="hljs-subst">{Movie.Description}</span>"</span>;
+
+         <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+         {
+             <span class="hljs-keyword">return</span> Page();
+         }
+
+         <span class="hljs-keyword">return</span> Redirect(<span class="hljs-string">"Movies"</span>);
+    }
+</div></code></pre>
+<p>Once again, add a breakpoint on the <code>if()</code> statement and debug.</p>
+<p>If we don't add any values into the fields and click the <code>Add Movie</code> button the validation fails and we return the current page with the following errors.</p>
+<p><img src="assets/images/validation-errors.jpg" alt="Validation errors" title="Validation errors"></p>
+<p>Add some valid input into each of the fields and this time once you pass validation you will be returned to the <code>Movies</code> page.</p>
+<p>We could also use <code>TempData</code> to pass the data once validated to the <code>Movies</code> page. At present we are not adding the new Movie to the Movies list so for a temporary solution we could use the <code>[TempData]</code> annotation.</p>
+<h3 id="addmoviecsharpcs">AddMovie.csharp.cs</h3>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
+
+    <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Pages</span>
+    {
+        <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AddMovieModel</span> : <span class="hljs-title">PageModel</span>
+        {
+            [<span class="hljs-meta">BindProperty</span>]
+            <span class="hljs-keyword">public</span> Movie? Movie { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            [<span class="hljs-meta">TempData</span>]
+            <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Message { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+            {
+            }
+
+            <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPost</span>(<span class="hljs-params"></span>)</span>
+            {
+                <span class="hljs-keyword">string</span> <span class="hljs-keyword">value</span> = <span class="hljs-string">$"<span class="hljs-subst">{Movie.Title}</span> - <span class="hljs-subst">{Movie.Rate}</span>/10 - <span class="hljs-subst">{Movie.Description}</span>"</span>;
+
+                <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+                {
+                    <span class="hljs-keyword">return</span> Page();
+                }
+
+                Message = <span class="hljs-keyword">value</span>;
+
+                <span class="hljs-keyword">return</span> Redirect(<span class="hljs-string">"Movies"</span>);
+            }
+        }
+    }
+</div></code></pre>
+<p>This creates a <code>Message</code> property and we store the results of <code>value</code> if the <code>ModelState</code> is valid.</p>
+<p>Add a <code>Message</code> field on the Movies.cshtml Razor page.</p>
+<pre class="hljs"><code><div>    &lt;h3&gt;@ViewData[<span class="hljs-string">"Title"</span>]&lt;/h3&gt;
+    &lt;hr /&gt;
+
+    &lt;h5&gt;Message: @Model.Message&lt;/h5&gt;
+
+    &lt;table <span class="hljs-keyword">class</span>=<span class="hljs-string">"table table-striped"</span>&gt;
+</div></code></pre>
+<p>In the <code>Movies</code> PageModel add the <code>Message</code> property.</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">public</span> List&lt;Movie&gt;? Movies { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+    [<span class="hljs-meta">TempData</span>]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Message { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+</div></code></pre>
+<p>Once you have added valid data in the AddMovie page you will see the following message appear on the <code>Movies</code> Razor page.</p>
+<p><img src="assets/images/temp-data-message.jpg" alt="Using TempData" title="Using TempData"></p>
+<h3 id="conclusion">Conclusion</h3>
+<p>We have seen that there are three ways of Data Binding.</p>
+<ol>
+<li>One way binding</li>
+<li>Two way binding</li>
+<li>Event binding</li>
+</ol>
+
+</body>
+</html>
