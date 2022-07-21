@@ -1,6 +1,6 @@
 # Introduction to Razor Pages in ASP.NET Core
 
-Code: ``Sandbox\RazorPagesContacts``.
+Code: ``Sandbox\Razor\RazorPagesContacts``.
 
 Razor Pages can make coding page-focused scenarios easier and more productive than using controllers and views.
 

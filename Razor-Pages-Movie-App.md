@@ -1,6 +1,6 @@
 # Get started with Razor Pages in ASP.NET Core
 
-App source code: ``Sandbox\RazorPagesMovie``
+App source code: ``Sandbox\Razor\RazorPagesMovie``
 
 ## Create an ASP.Net Core WebApp
 
