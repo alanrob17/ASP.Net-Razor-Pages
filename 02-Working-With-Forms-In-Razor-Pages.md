@@ -2,6 +2,8 @@
 
 Code: ``Sandbox\Razor\MovieApp``
 
+**Note:** in these ode example we are not going to use ``scaffolding`` to build our pages. All the HTML and code will be added manually.
+
 ## One way data binding
 
 The following file has hard coded data. We are going to change this with one way data binding.
