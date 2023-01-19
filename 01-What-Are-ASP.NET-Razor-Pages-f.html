@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>What are Razor Pages</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+</style>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">ASP.NET Core Razor Pages</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">What are Razor Pages? <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+
+<h1 id="what-are-aspnet-razor-pages">What are ASP.NET Razor Pages</h1>
+<h2 id="how-razor-pages-work">How Razor Pages work</h2>
+<p><img src="assets/images/razor-architecture.jpg" alt="Razor Architecture" title="razor-architecture"></p>
+<p>ASP.Net Routing receives the request from the browser to show which Razor Page to trigger (Welcome).</p>
+<p>It is going to use the ASP.Net View Engine to locate and render the view so the user can see the result.</p>
+<p>When you call the Welcome page Razor Pages is going to search the <strong>Pages/Home</strong> folder for the <code>Welcome.cshtml</code> and <code>Welcome.cshtml.cs</code> files. <code>Welcome.cshtml.cs</code> is the code behind file which is where all of the logic is placed.</p>
+<h2 id="razor-page-code">Razor Page code</h2>
+<p>A simple Razor Page code file looks like this.</p>
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">HomeModel</span> : <span class="hljs-title">PageModel</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+        {
+
+        }
+    }
+</div></code></pre>
+<p>The name of the class must end with <strong>Model</strong>. In our case <code>HomeModel</code>. We inherit from the <code>PageModel</code> class.</p>
+<p>Razor pages have the following features.</p>
+<ul>
+<li>Everything under the Pages folder is important. This is where all of our pages reside.</li>
+<li>Razor pages are designed for page-focused scenarios.</li>
+<li>Anti-forgery token validation is enabled automatically.</li>
+<li>Hard to create complex routes.</li>
+</ul>
+<h2 id="creating-a-new-project">Creating a new project</h2>
+<p>Select ASP.Net core web app (search for web app).</p>
+<p><img src="assets/images/configure-new-project.jpg" alt="Configure new app" title="Configure new app"></p>
+<p>Add an project name, location and solution name.</p>
+<p>In the next page select the version of <strong>.Net</strong> you want to use.</p>
+<p><img src="assets/images/additional-information.jpg" alt="Additional information" title="Additional information"></p>
+<p>Select Authentication if you want to use it.</p>
+<p>Check Configure for HTTPS.</p>
+<p>Enable Docker if you want to use Docker (use Linux format).</p>
+<p>You now have a project with the following format.</p>
+<p><img src="assets/images/solution-explorer.jpg" alt="Solution explorer" title="Solution explorer"></p>
+<p><strong>wwwroot</strong> is where all static content gets added. It has <strong>css</strong>, <strong>js</strong> and <strong>lib</strong> folders which have their specific files. The <strong>lib</strong> file contains the Bootstrap and jQuery files. <strong>css</strong> is where you add site specific .css files. <strong>js</strong> contains the JavaScript files that you write.</p>
+<p>You can also create an images folder here for your site images.</p>
+<p>The most important folder is the <strong>Pages</strong> folder and this contains the following.</p>
+<p><img src="assets/images/pages-folder.jpg" alt="Pages folder" title="Pages folder"></p>
+<p>This is where all of your pages reside. It already has some basic pages.</p>
+<p>You have the following pages.</p>
+<ul>
+<li>Index.cshtml</li>
+<li>Error.cshtml</li>
+<li>Privacy.cshtml</li>
+</ul>
+<p>Under each of these pages you have a <strong>.cshtml.cs</strong> code  file.</p>
+<p>Also in the <strong>Pages</strong> folder we have two other files.</p>
+<ol>
+<li><strong>_ViewImports.cshtml</strong></li>
+</ol>
+<p>Which contains the namespaces and Using statements we want to use throughout the app.</p>
+<pre class="prettyprint"><code><div>    @using MoviesApp
+    @namespace MoviesApp.Pages
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+</div></code></pre>
+<ol start="2">
+<li><strong>_ViewStart</strong></li>
+</ol>
+<p>Shows us where the Layout page is for all of our pages.</p>
+<pre class="prettyprint"><code><div>    @{
+        Layout = &quot;_Layout&quot;;
+    }
+</div></code></pre>
+<p>This tells us our layout page is <strong>_Layout.cshtml</strong>.</p>
+<p>The Layout page is in the <strong>Shared</strong> folder</p>
+<ol>
+<li><strong>_Layout.cshtml</strong></li>
+</ol>
+<p>This contains the formatting for each of our Razor Pages including the navigation bar.</p>
+<pre class="prettyprint"><code><div>    &lt;div class=&quot;container&quot;&gt;
+        &lt;main role=&quot;main&quot; class=&quot;pb-3&quot;&gt;
+            @RenderBody()
+        &lt;/main&gt;
+    &lt;/div&gt;
+</div></code></pre>
+<p>The most important part of this page being, <code>@RenderBody()</code> and this is where our individual page content is injected.</p>
+<p>Also the <code>_Layout.cshtml</code> page contains a code behind page named <code>_layout.cshtml.css</code> file that contains our site styling.</p>
+<ol start="2">
+<li><strong>_ValidationScriptsPartial.cshtml</strong></li>
+</ol>
+<p>This contains a list of scripts that we include in our site.</p>
+<pre class="prettyprint"><code><div>&lt;script src=&quot;~/lib/jquery-validation/dist/jquery.validate.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js&quot;&gt;&lt;/script&gt;
+</div></code></pre>
+<p>In the root folder there are a couple of other important files.</p>
+<ol>
+<li><strong>appsettings.json</strong></li>
+</ol>
+<pre class="prettyprint"><code><div>    {
+      <span class="hljs-attr">"Logging"</span>: {
+        <span class="hljs-attr">"LogLevel"</span>: {
+          <span class="hljs-attr">"Default"</span>: <span class="hljs-string">"Information"</span>,
+          <span class="hljs-attr">"Microsoft.AspNetCore"</span>: <span class="hljs-string">"Warning"</span>
+        }
+      },
+      <span class="hljs-attr">"AllowedHosts"</span>: <span class="hljs-string">"*"</span>
+    }
+</div></code></pre>
+<p>This is where we add the connection string settings and app secrets settings, etc.</p>
+<ol start="2">
+<li><strong>Program.cs</strong></li>
+</ol>
+<p>Is the most important file in our project because the application starts from this file.</p>
+<pre class="prettyprint"><code><div><span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Program</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] args</span>)</span>
+        {
+            <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+            <span class="hljs-comment">// Add services to the container.</span>
+            builder.Services.AddRazorPages();
+
+            <span class="hljs-keyword">var</span> app = builder.Build();
+
+            <span class="hljs-comment">// Configure the HTTP request pipeline.</span>
+            <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+                <span class="hljs-comment">// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.</span>
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.MapRazorPages();
+
+            app.Run();
+        }
+    }
+}
+</div></code></pre>
+<p>We can add services to our application in this section. You can see that we are running the Razor Pages service.</p>
+<pre class="prettyprint"><code><div>    <span class="hljs-comment">// Add services to the container.</span>
+    builder.Services.AddRazorPages();
+</div></code></pre>
+<p>You can configure HTTPS for production.</p>
+<pre class="prettyprint"><code><div>    <span class="hljs-comment">// Configure the HTTP request pipeline.</span>
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        <span class="hljs-comment">// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://akms/aspnetcore-hsts.</span>
+        app.UseHsts();
+    }
+</div></code></pre>
+<p>We can request the HTTP requests are sent to HTTPS with.</p>
+<pre class="prettyprint"><code><div>    app.UseHttpsRedirection();
+</div></code></pre>
+<p>We can serve static content (images, css, etc) in our project with.</p>
+<pre class="prettyprint"><code><div>    app.UseStaticFiles();
+</div></code></pre>
+<p>To use routing.</p>
+<pre class="prettyprint"><code><div>    app.UseRouting();
+</div></code></pre>
+<p>This allows the page to be served from within the pages folder.</p>
+<p>We allow Razor Pages to be served with.</p>
+<pre class="prettyprint"><code><div>    app.MapRazorPages();
+</div></code></pre>
+<p>This is used to configure the end-point routing for the Razor Pages.</p>
+<p>The last line runs our application.</p>
+<pre class="prettyprint"><code><div>    app.Run();
+</div></code></pre>
+<h2 id="razor-pages-key-concepts">Razor Pages Key Concepts</h2>
+<p>Razor Pages (or content pages) are intended to be browsable and contain a mixture of client-side and server-side code.</p>
+<p>Razor Pages are decorated with the <code>@page</code> directive. This specifies that it's a Razor page.</p>
+<p>For each page we also have a <code>@model</code> directive that specifies the model used on the page.</p>
+<p>We also have Razor page code blocks encased in <code>@{ ... }</code>. This is where you can write your C# code.</p>
+<p>To pass data from a page to a model we are going to use <code>model binding</code>.</p>
+        
+
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>

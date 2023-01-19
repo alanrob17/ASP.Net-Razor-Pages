@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>01-What-Are-ASP.NET-Razor-Pages.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="what-are-aspnet-razor-pages">What are ASP.NET Razor Pages?</h1>
+<h2 id="how-razor-pages-work">How Razor Pages work</h2>
+<p><img src="assets/images/razor-architecture.jpg" alt="Razor Architecture" title="razor-architecture"></p>
+<p>ASP.Net Routing receives the request from the browser to show which Razor Page to trigger (Welcome).</p>
+<p>It is going to use the ASP.Net View Engine to locate and render the view so the user can see the result.</p>
+<p>When you call the Welcome page Razor Pages is going to search the <strong>Pages/Home</strong> folder for the <code>Welcome.cshtml</code> and <code>Welcome.cshtml.cs</code> files. <code>Welcome.cshtml.cs</code> is the code behind file which is where all of the logic is placed.</p>
+<h2 id="razor-page-code">Razor Page code</h2>
+<p>A simple Razor Page code file looks like this.</p>
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">HomeModel</span> : <span class="hljs-title">PageModel</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"></span>)</span>
+        {
+
+        }
+    }
+</div></code></pre>
+<p>The name of the class must end with <strong>Model</strong>. In our case <code>HomeModel</code>. We inherit from the <code>PageModel</code> class.</p>
+<p>Razor pages have the following features.</p>
+<ul>
+<li>Everything under the Pages folder is important. This is where all of our pages reside.</li>
+<li>Razor pages are designed for page-focused scenarios.</li>
+<li>Anti-forgery token validation is enabled automatically.</li>
+<li>Hard to create complex routes.</li>
+</ul>
+<h2 id="creating-a-new-project">Creating a new project</h2>
+<p>Select ASP.Net core web app (search for web app).</p>
+<p><img src="assets/images/configure-new-project.jpg" alt="Configure new app" title="Configure new app"></p>
+<p>Add an project name, location and solution name.</p>
+<p>In the next page select the version of <strong>.Net</strong> you want to use.</p>
+<p><img src="assets/images/additional-information.jpg" alt="Additional information" title="Additional information"></p>
+<p>Select Authentication if you want to use it.</p>
+<p>Check Configure for HTTPS.</p>
+<p>Enable Docker if you want to use Docker (use Linux format).</p>
+<p>You now have a project with the following format.</p>
+<p><img src="assets/images/solution-explorer.jpg" alt="Solution explorer" title="Solution explorer"></p>
+<p><strong>wwwroot</strong> is where all static content gets added. It has <strong>css</strong>, <strong>js</strong> and <strong>lib</strong> folders which have their specific files. The <strong>lib</strong> file contains the Bootstrap and jQuery files. <strong>css</strong> is where you add site specific .css files. <strong>js</strong> contains the JavaScript files that you write.</p>
+<p>You can also create an images folder here for your site images.</p>
+<p>The most important folder is the <strong>Pages</strong> folder and this contains the following.</p>
+<p><img src="assets/images/pages-folder.jpg" alt="Pages folder" title="Pages folder"></p>
+<p>This is where all of your pages reside. It already has some basic pages.</p>
+<p>You have the following pages.</p>
+<ul>
+<li>Index.cshtml</li>
+<li>Error.cshtml</li>
+<li>Privacy.cshtml</li>
+</ul>
+<p>Under each of these pages you have a <strong>.cshtml.cs</strong> code  file.</p>
+<p>Also in the <strong>Pages</strong> folder we have two other files.</p>
+<ol>
+<li><strong>_ViewImports.cshtml</strong></li>
+</ol>
+<p>Which contains the namespaces and Using statements we want to use throughout the app.</p>
+<pre class="prettyprint"><code><div>    @using MoviesApp
+    @namespace MoviesApp.Pages
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+</div></code></pre>
+<ol start="2">
+<li><strong>_ViewStart</strong></li>
+</ol>
+<p>Shows us where the Layout page is for all of our pages.</p>
+<pre class="prettyprint"><code><div>    @{
+        Layout = &quot;_Layout&quot;;
+    }
+</div></code></pre>
+<p>This tells us our layout page is <strong>_Layout.cshtml</strong>.</p>
+<p>The Layout page is in the <strong>Shared</strong> folder</p>
+<ol>
+<li><strong>_Layout.cshtml</strong></li>
+</ol>
+<p>This contains the formatting for each of our Razor Pages including the navigation bar.</p>
+<pre class="prettyprint"><code><div>    &lt;div class=&quot;container&quot;&gt;
+        &lt;main role=&quot;main&quot; class=&quot;pb-3&quot;&gt;
+            @RenderBody()
+        &lt;/main&gt;
+    &lt;/div&gt;
+</div></code></pre>
+<p>The most important part of this page being, <code>@RenderBody()</code> and this is where our individual page content is injected.</p>
+<p>Also the <code>_Layout.cshtml</code> page contains a code behind page named <code>_layout.cshtml.css</code> file that contains our site styling.</p>
+<ol start="2">
+<li><strong>_ValidationScriptsPartial.cshtml</strong></li>
+</ol>
+<p>This contains a list of scripts that we include in our site.</p>
+<pre class="prettyprint"><code><div>&lt;script src=&quot;~/lib/jquery-validation/dist/jquery.validate.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js&quot;&gt;&lt;/script&gt;
+</div></code></pre>
+<p>In the root folder there are a couple of other important files.</p>
+<ol>
+<li><strong>appsettings.json</strong></li>
+</ol>
+<pre class="prettyprint"><code><div>    {
+      <span class="hljs-attr">"Logging"</span>: {
+        <span class="hljs-attr">"LogLevel"</span>: {
+          <span class="hljs-attr">"Default"</span>: <span class="hljs-string">"Information"</span>,
+          <span class="hljs-attr">"Microsoft.AspNetCore"</span>: <span class="hljs-string">"Warning"</span>
+        }
+      },
+      <span class="hljs-attr">"AllowedHosts"</span>: <span class="hljs-string">"*"</span>
+    }
+</div></code></pre>
+<p>This is where we add the connection string settings and app secrets settings, etc.</p>
+<ol start="2">
+<li><strong>Program.cs</strong></li>
+</ol>
+<p>Is the most important file in our project because the application starts from this file.</p>
+<pre class="prettyprint"><code><div><span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Program</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] args</span>)</span>
+        {
+            <span class="hljs-keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+            <span class="hljs-comment">// Add services to the container.</span>
+            builder.Services.AddRazorPages();
+
+            <span class="hljs-keyword">var</span> app = builder.Build();
+
+            <span class="hljs-comment">// Configure the HTTP request pipeline.</span>
+            <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+                <span class="hljs-comment">// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.</span>
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.MapRazorPages();
+
+            app.Run();
+        }
+    }
+}
+</div></code></pre>
+<p>We can add services to our application in this section. You can see that we are running the Razor Pages service.</p>
+<pre class="prettyprint"><code><div>    <span class="hljs-comment">// Add services to the container.</span>
+    builder.Services.AddRazorPages();
+</div></code></pre>
+<p>You can configure HTTPS for production.</p>
+<pre class="prettyprint"><code><div>    <span class="hljs-comment">// Configure the HTTP request pipeline.</span>
+    <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+        <span class="hljs-comment">// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://akms/aspnetcore-hsts.</span>
+        app.UseHsts();
+    }
+</div></code></pre>
+<p>We can request the HTTP requests are sent to HTTPS with.</p>
+<pre class="prettyprint"><code><div>    app.UseHttpsRedirection();
+</div></code></pre>
+<p>We can serve static content (images, css, etc) in our project with.</p>
+<pre class="prettyprint"><code><div>    app.UseStaticFiles();
+</div></code></pre>
+<p>To use routing.</p>
+<pre class="prettyprint"><code><div>    app.UseRouting();
+</div></code></pre>
+<p>This allows the page to be served from within the pages folder.</p>
+<p>We allow Razor Pages to be served with.</p>
+<pre class="prettyprint"><code><div>    app.MapRazorPages();
+</div></code></pre>
+<p>This is used to configure the end-point routing for the Razor Pages.</p>
+<p>The last line runs our application.</p>
+<pre class="prettyprint"><code><div>    app.Run();
+</div></code></pre>
+<h2 id="razor-pages-key-concepts">Razor Pages Key Concepts</h2>
+<p>Razor Pages (or content pages) are intended to be browsable and contain a mixture of client-side and server-side code.</p>
+<p>Razor Pages are decorated with the <code>@page</code> directive. This specifies that it's a Razor page.</p>
+<p>For each page we also have a <code>@model</code> directive that specifies the model used on the page.</p>
+<p>We also have Razor page code blocks encased in <code>@{ ... }</code>. This is where you can write your C# code.</p>
+<p>To pass data from a page to a model we are going to use <code>model binding</code>.</p>
+
+</body>
+</html>
