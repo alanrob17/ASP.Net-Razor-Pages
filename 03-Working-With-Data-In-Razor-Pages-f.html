@@ -1,370 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>03-Working-With-Data-In-Razor-Pages.md</title>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-
-<style>
-/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-body {
-	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
-	font-size: var(--vscode-markdown-font-size, 14px);
-	padding: 0 26px;
-	line-height: var(--vscode-markdown-line-height, 22px);
-	word-wrap: break-word;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Working with Data in Razor Pages</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
 }
 
-#code-csp-warning {
-	position: fixed;
-	top: 0;
-	right: 0;
-	color: white;
-	margin: 16px;
-	text-align: center;
-	font-size: 12px;
-	font-family: sans-serif;
-	background-color:#444444;
-	cursor: pointer;
-	padding: 6px;
-	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+h2 {
+	margin-top: 60px;
 }
 
-#code-csp-warning:hover {
-	text-decoration: none;
-	background-color:#007acc;
-	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+h4, h3 {
+	padding-top: 40px!;		
 }
 
-body.scrollBeyondLastLine {
-	margin-bottom: calc(100vh - 22px);
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
 }
 
-body.showEditorSelection .code-line {
-	position: relative;
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
 }
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
 
-body.showEditorSelection .code-active-line:before,
-body.showEditorSelection .code-line:hover:before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: -12px;
-	height: 100%;
 }
-
-body.showEditorSelection li.code-active-line:before,
-body.showEditorSelection li.code-line:hover:before {
-	left: -30px;
-}
-
-.vscode-light.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.15);
-}
-
-.vscode-light.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.40);
-}
-
-.vscode-light.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-dark.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.4);
-}
-
-.vscode-dark.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.60);
-}
-
-.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-high-contrast.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 160, 0, 0.7);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 160, 0, 1);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-}
-
-a {
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:focus,
-input:focus,
-select:focus,
-textarea:focus {
-	outline: 1px solid -webkit-focus-ring-color;
-	outline-offset: -1px;
-}
-
-hr {
-	border: 0;
-	height: 2px;
-	border-bottom: 2px solid;
-}
-
-h1 {
-	padding-bottom: 0.3em;
-	line-height: 1.2;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-}
-
-h1, h2, h3 {
-	font-weight: normal;
-}
-
-table {
-	border-collapse: collapse;
-}
-
-table > thead > tr > th {
-	text-align: left;
-	border-bottom: 1px solid;
-}
-
-table > thead > tr > th,
-table > thead > tr > td,
-table > tbody > tr > th,
-table > tbody > tr > td {
-	padding: 5px 10px;
-}
-
-table > tbody > tr + tr > td {
-	border-top: 1px solid;
-}
-
 blockquote {
-	margin: 0 7px 0 5px;
-	padding: 0 16px 0 10px;
-	border-left-width: 5px;
-	border-left-style: solid;
-}
-
-code {
-	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 1em;
-	line-height: 1.357em;
-}
-
-body.wordWrap pre {
-	white-space: pre-wrap;
-}
-
-pre:not(.hljs),
-pre.hljs code > div {
-	padding: 16px;
-	border-radius: 3px;
-	overflow: auto;
-}
-
-pre code {
-	color: var(--vscode-editor-foreground);
-	tab-size: 4;
-}
-
-/** Theming */
-
-.vscode-light pre {
-	background-color: rgba(220, 220, 220, 0.4);
-}
-
-.vscode-dark pre {
-	background-color: rgba(10, 10, 10, 0.4);
-}
-
-.vscode-high-contrast pre {
-	background-color: rgb(0, 0, 0);
-}
-
-.vscode-high-contrast h1 {
-	border-color: rgb(0, 0, 0);
-}
-
-.vscode-light table > thead > tr > th {
-	border-color: rgba(0, 0, 0, 0.69);
-}
-
-.vscode-dark table > thead > tr > th {
-	border-color: rgba(255, 255, 255, 0.69);
-}
-
-.vscode-light h1,
-.vscode-light hr,
-.vscode-light table > tbody > tr + tr > td {
-	border-color: rgba(0, 0, 0, 0.18);
-}
-
-.vscode-dark h1,
-.vscode-dark hr,
-.vscode-dark table > tbody > tr + tr > td {
-	border-color: rgba(255, 255, 255, 0.18);
-}
-
-</style>
-
-<style>
-/* Tomorrow Theme */
-/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
-/* Original theme - https://github.com/chriskempson/tomorrow-theme */
-
-/* Tomorrow Comment */
-.hljs-comment,
-.hljs-quote {
-	color: #8e908c;
-}
-
-/* Tomorrow Red */
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-deletion {
-	color: #c82829;
-}
-
-/* Tomorrow Orange */
-.hljs-number,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
-.hljs-meta,
-.hljs-link {
-	color: #f5871f;
-}
-
-/* Tomorrow Yellow */
-.hljs-attribute {
-	color: #eab700;
-}
-
-/* Tomorrow Green */
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-	color: #718c00;
-}
-
-/* Tomorrow Blue */
-.hljs-title,
-.hljs-section {
-	color: #4271ae;
-}
-
-/* Tomorrow Purple */
-.hljs-keyword,
-.hljs-selector-tag {
-	color: #8959a8;
-}
-
-.hljs {
-	display: block;
-	overflow-x: auto;
-	color: #4d4d4c;
-	padding: 0.5em;
-}
-
-.hljs-emphasis {
-	font-style: italic;
-}
-
-.hljs-strong {
-	font-weight: bold;
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
 }
 </style>
-
-<style>
-/*
- * Markdown PDF CSS
- */
-
- body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
-	padding: 0 12px;
-}
-
-pre {
-	background-color: #f8f8f8;
-	border: 1px solid #cccccc;
-	border-radius: 3px;
-	overflow-x: auto;
-	white-space: pre-wrap;
-	overflow-wrap: break-word;
-}
-
-pre:not(.hljs) {
-	padding: 23px;
-	line-height: 19px;
-}
-
-blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-
-.emoji {
-	height: 1.4em;
-}
-
-code {
-	font-size: 14px;
-	line-height: 19px;
-}
-
-/* for inline code */
-:not(pre):not(.hljs) > code {
-	color: #C9AE75; /* Change the old color so it seems less like an error */
-	font-size: inherit;
-}
-
-/* Page Break : use <div class="page"/> to insert page break
--------------------------------------------------------- */
-.page {
-	page-break-after: always;
-}
-
-</style>
-
-<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 </head>
 <body>
-  <script>
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
-          ? 'dark'
-          : 'default'
-    });
-  </script>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">LinkedIn - ASP.NET Core Razor Pages</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Working with Data in Razor Pages <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
 <h1 id="working-with-data-in-razor-pages">Working with Data in Razor Pages</h1>
 <p>Code: <code>Sandbox\Razor\MovieApp</code></p>
 <p><strong>Note:</strong> in these code examples we are not going to use <code>scaffolding</code> to build our pages. All the HTML and code will be added manually.</p>
@@ -386,11 +94,11 @@ code {
 <p>In <em>Connect to a database</em> name it <code>MovieApp</code>.</p>
 <p>Click <code>Ok</code>.</p>
 <p>In the Server Explorer data connection you will see.</p>
-<pre class="hljs"><code><div>    tiger.MovieApp.dbo
+<pre class="prettyprint"><code><div>    tiger.MovieApp.dbo
 </div></code></pre>
 <p>Right-Click the <code>MovieApp</code> database and look at <em>Properties</em> you will see a <em>Connection string</em> so copy this.</p>
 <p>To store the connection string use the <code>appsettings.json</code> file.</p>
-<pre class="hljs"><code><div>    {
+<pre class="prettyprint"><code><div>    {
       <span class="hljs-attr">"Logging"</span>: {
         <span class="hljs-attr">"LogLevel"</span>: {
           <span class="hljs-attr">"Default"</span>: <span class="hljs-string">"Information"</span>,
@@ -406,7 +114,7 @@ code {
 <p><strong>Note:</strong> you can add multiple connection strings in here, each separated by a comma.</p>
 <h3 id="add-nuget-packages">Add NuGet packages</h3>
 <p>Open the NuGet console.</p>
-<pre class="hljs"><code><div>    <span class="hljs-built_in">Install-Package</span> Microsoft.EntityFrameworkCore
+<pre class="prettyprint"><code><div>    <span class="hljs-built_in">Install-Package</span> Microsoft.EntityFrameworkCore
     
     <span class="hljs-built_in">Install-Package</span> Microsoft.EntityFrameworkCore.SqlServer
 
@@ -417,7 +125,7 @@ code {
 <p>In the class we need to inherit from the base class <code>DbContext</code>.</p>
 <p>Add the using statement <code>using Microsoft.EntityFrameworkCore;</code>.</p>
 <p>Create a <code>ctor</code> constructor named <code>MovieAppDbContext()</code>.</p>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.EntityFrameworkCore;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
 
     <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Data</span>
@@ -437,7 +145,7 @@ code {
 <p>We have injected the <code>DbContextOptions</code> into our constructor and we need to add C# class <code>MovieAppDbContext</code> and name it <code>options</code> which inherits from <code>base(options)</code>.</p>
 <p>We also need to create a <code>DbSet&lt;&gt;</code> and this will be used by Entity Framework Core to create the table in our database which will be derived from our <code>Movie</code> model. We import the Namespace from Movie (<code>MoviesApp.Data.Models</code>). The table name will be <code>Movies</code> and we need to <code>get</code> and <code>set</code> data to and from the database.</p>
 <p>Now we need to configure our context to be able to work with the Entity Framework Core and the SQL Server database. To do this we need to go to the <code>Program.cs</code> class file and add the following statement below the <code>AddRazorPages()</code> statement.</p>
-<pre class="hljs"><code><div>    builder.Services.AddDbContext&lt;MovieAppDbContext&gt;(options =&gt; 
+<pre class="prettyprint"><code><div>    builder.Services.AddDbContext&lt;MovieAppDbContext&gt;(options =&gt; 
         options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="hljs-string">"MovieApp"</span>)));
 </div></code></pre>
 <p>We add a <code>builder.Services.AddDbContext</code> and use the <code>MovieAppDbContext</code> context. In our options we need to tell the services that we are using <code>SqlServer</code>. To access our connection string we use <code>builder.Configuration.GetConnectionString</code> to get the configuration string with our reference to the <code>MovieApp</code> connection string from <code>appsettings.json</code>.</p>
@@ -446,19 +154,19 @@ code {
 <p>This will build the database for us using Entity Framework Core and SQL Server.</p>
 <p><strong>Note:</strong> before you run the following you should compile your project and make sure you have no compile errors.</p>
 <p>Go to the NuGet console.</p>
-<pre class="hljs"><code><div>    <span class="hljs-built_in">Add-Migration</span> Initial
+<pre class="prettyprint"><code><div>    <span class="hljs-built_in">Add-Migration</span> Initial
 </div></code></pre>
 <p>Where <code>Initial</code> is the name of the migration.</p>
 <p>This creates the database.</p>
 <p>If you look in the migrations folder you will see <code>20220720063743_Initial.cs</code> which is the script to create the table in our database. To do this run the following NuGet command.</p>
-<pre class="hljs"><code><div>    <span class="hljs-built_in">Update-Database</span>
+<pre class="prettyprint"><code><div>    <span class="hljs-built_in">Update-Database</span>
 </div></code></pre>
 <p>This creates the <code>Movie</code> table.</p>
 <p>In the Server Explorer in Visual Studio go to the database and open the tables. You will see the <code>Movie</code> table. From here you can <code>Show Table Data</code> to see if there is any table rows. In our case there won't be.</p>
 <h2 id="adding-and-storing-data-in-a-database">Adding and storing data in a database</h2>
 <p>We are going to add a new <code>Movie</code> into the database.</p>
 <p>In our <code>AddMovie</code> PageModel we need to create a constructor and add our database context.</p>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">private</span> MovieAppDbContext _context;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">private</span> MovieAppDbContext _context;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">AddMovieModel</span>(<span class="hljs-params">MovieAppDbContext context</span>)</span>
     {
@@ -466,7 +174,7 @@ code {
     }
 </div></code></pre>
 <p>Now, in our <code>OnPost()</code> method we create a new <code>Movie</code> object to save the data that has been posted.</p>
-<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPost</span>(<span class="hljs-params"></span>)</span>
+<pre class="prettyprint"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> IActionResult <span class="hljs-title">OnPost</span>(<span class="hljs-params"></span>)</span>
     {
         <span class="hljs-keyword">string</span> <span class="hljs-keyword">value</span> = <span class="hljs-string">$"<span class="hljs-subst">{Movie.Title}</span> - <span class="hljs-subst">{Movie.Rate}</span>/10 - <span class="hljs-subst">{Movie.Description}</span>"</span>;
         
@@ -497,7 +205,7 @@ code {
 <h2 id="getting-data-from-a-database">Getting data from a database</h2>
 <p>To be able to see the data in our <code>Movies</code> list go to <code>Movies.cshtml.cs</code>. Remove the hardcoded data from the <code>OnGet()</code> method.</p>
 <h3 id="moviescshtmlcs">Movies.cshtml.cs</h3>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
     <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
@@ -534,7 +242,7 @@ code {
 <p>Now we are going to get a single movie from the database by using the <strong>Id</strong>.</p>
 <p>First add the MovieAppDbContext. Don't forget to add the MovieAppDbContext namespace, <code>using MoviesApp.Data;</code>.</p>
 <p>Also add the Movie class so we can store an individual movie and import the <code>Models</code> namespace.</p>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
     <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
@@ -554,19 +262,19 @@ code {
     }
 </div></code></pre>
 <p>In The <code>OnGet()</code> method we to get the <strong>Movie</strong> based on its <strong>Id</strong>.</p>
-<pre class="hljs"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> id</span>)</span>
+<pre class="prettyprint"><code><div>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnGet</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> id</span>)</span>
     {
         Movie = _context.Movies.FirstOrDefault(n =&gt; n.Id == id);
     }
 </div></code></pre>
 <p>Where are we going to get the <strong>Id</strong> from?</p>
 <p>Go to the Movie.cshtml page and on the top of the page is the page directive.</p>
-<pre class="hljs"><code><div>    @page &quot;{id:int}&quot;
+<pre class="prettyprint"><code><div>    @page &quot;{id:int}&quot;
 </div></code></pre>
 <p>We have added the <code>{id}</code> and the <strong>Id</strong> is going to be part of the Razor Page route. You can also define the type as <code>int</code>.</p>
 <p><strong>Note:</strong> the <code>id</code> value in the page has to be the same identical value as used in the <code>OnGet()</code> method.</p>
 <h3 id="final-moviecshtmlcs-code">final Movie.cshtml.cs code</h3>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
     <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
@@ -590,7 +298,7 @@ code {
     }
 </div></code></pre>
 <p>Now, we have to remove the hard coded data in the cshtml page.</p>
-<pre class="hljs"><code><div>    &lt;div class=&quot;card-body&quot;&gt;
+<pre class="prettyprint"><code><div>    &lt;div class=&quot;card-body&quot;&gt;
         &lt;h5 class=&quot;card-title&quot;&gt;Special title treatment&lt;/h5&gt;
         &lt;p class=&quot;card-text&quot;&gt;8/10&lt;/p&gt;
         &lt;p class=&quot;card-text&quot;&gt;With supporting text below as a natural lead-in to additional content.&lt;/p&gt;
@@ -598,7 +306,7 @@ code {
     &lt;/div&gt;
 </div></code></pre>
 <p>Change to.</p>
-<pre class="hljs"><code><div>    &lt;div class=&quot;card-body&quot;&gt;
+<pre class="prettyprint"><code><div>    &lt;div class=&quot;card-body&quot;&gt;
         &lt;h5 class=&quot;card-title&quot;&gt;@Model.Movie?.Title&lt;/h5&gt;
         &lt;p class=&quot;card-text&quot;&gt;@Model.Movie?.Rate/10&lt;/p&gt;
         &lt;p class=&quot;card-text&quot;&gt;@Model.Movie?.Description&lt;/p&gt;
@@ -615,7 +323,7 @@ code {
 <h2 id="adding-a-custom-url">Adding a custom url</h2>
 <p>You can create your own custom url for a page if you want.</p>
 <p>In our case we will test this with.</p>
-<pre class="hljs"><code><div>    @page &quot;Details/{id:int}&quot;
+<pre class="prettyprint"><code><div>    @page &quot;Details/{id:int}&quot;
 </div></code></pre>
 <p>We can test this with the following url.</p>
 <blockquote>
@@ -625,7 +333,7 @@ code {
 <p>Now, change it back by removing the <code>Details</code> route.</p>
 <p>As a final change in the Movie header add the <code>Id</code>.</p>
 <h3 id="final-moviecshtml-code">final Movie.cshtml code</h3>
-<pre class="hljs"><code><div>    @page &quot;{id:int}&quot;
+<pre class="prettyprint"><code><div>    @page &quot;{id:int}&quot;
     @model MoviesApp.Pages.MovieModel
     
     @{
@@ -660,7 +368,7 @@ code {
 <p>Add an <strong>IMoviesService</strong> interface in this folder.</p>
 <p>Add an <strong>MoviesService</strong> class in this folder.</p>
 <h4 id="imoviescs">IMovies.cs</h4>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
 
     <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Services</span>
     {
@@ -674,7 +382,7 @@ code {
     }
 </div></code></pre>
 <p>Now go to the <code>MoviesService.cs</code> class and inherit from <strong>IMoviesService</strong> and as soon as you do this it will fill out the methods for you.</p>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
 
     <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Services</span>
     {
@@ -698,7 +406,7 @@ code {
     }
 </div></code></pre>
 <p>Now we are at the stage where we can fill in each method. First add a constructor (<code>ctor</code>) and then fill in each of the methods.</p>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> MoviesApp.Data;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
 
     <span class="hljs-keyword">namespace</span> <span class="hljs-title">MoviesApp.Services</span>
@@ -722,11 +430,11 @@ code {
     }
 </div></code></pre>
 <p>To stop nullable error messages add a question mark to the <code>Get()</code> method and also go back to the <strong>IMoviesService.cs</strong> code and add a question mark there as well.</p>
-<pre class="hljs"><code><div>    Movie? Get(<span class="hljs-keyword">int</span> id);
+<pre class="prettyprint"><code><div>    Movie? Get(<span class="hljs-keyword">int</span> id);
 </div></code></pre>
 <p>Now in all of our Movie pages we have to inject the services instead of the context (MovieAppDbContext).</p>
 <h4 id="moviecshtmlcs">Movie.cshtml.cs</h4>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
     <span class="hljs-keyword">using</span> MoviesApp.Services;
@@ -750,7 +458,7 @@ code {
     }
 </div></code></pre>
 <h4 id="moviesschtmlcs">Movies.schtml.cs</h4>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
     <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
@@ -777,7 +485,7 @@ code {
     }
 </div></code></pre>
 <h4 id="addmoviecshtmlcs">AddMovie.cshtml.cs</h4>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
     <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
@@ -828,7 +536,7 @@ code {
 </div></code></pre>
 <p>The next step is to configure the <strong>MoviesService</strong> in Program.cs or we won't be able to inject the service.</p>
 <p>After <code>builder.Services.AddRazorPages();</code> add the MoviesService configuration.</p>
-<pre class="hljs"><code><div>    builder.Services.AddScoped&lt;IMoviesService, MoviesService&gt;();
+<pre class="prettyprint"><code><div>    builder.Services.AddScoped&lt;IMoviesService, MoviesService&gt;();
 </div></code></pre>
 <p>This basically means that we are going to inject the <code>IMoviesService</code> and the implementation of the <code>IMoviesService</code> is <code>MoviesService</code>.</p>
 <p><strong>Note:</strong> there are three different types of services we could add here.</p>
@@ -851,7 +559,7 @@ code {
 <p><img src="assets/images/exception.jpg" alt="Exception" title="Exception"></p>
 <p>We have to go back and make changes to all of our code pages. Change all of the constructors to <strong>IMovieService</strong> and the private Service string to <strong>IMovieService</strong>.</p>
 <h4 id="final-addmoviecshtmlcs">Final AddMovie.cshtml.cs</h4>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
     <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
@@ -902,7 +610,7 @@ code {
     }
 </div></code></pre>
 <h4 id="final-moviescshtmlcs">Final Movies.cshtml.cs</h4>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc;
     <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
@@ -929,7 +637,7 @@ code {
     }
 </div></code></pre>
 <h4 id="final-moviecshtmlcs">final Movie.cshtml.cs</h4>
-<pre class="hljs"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">using</span> Microsoft.AspNetCore.Mvc.RazorPages;
     <span class="hljs-keyword">using</span> MoviesApp.Data;
     <span class="hljs-keyword">using</span> MoviesApp.Data.Models;
     <span class="hljs-keyword">using</span> MoviesApp.Services;
@@ -954,5 +662,19 @@ code {
 </div></code></pre>
 <p>Making these minor changes will get your application injecting the MoviesServices properly.</p>
 
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
 </body>
 </html>

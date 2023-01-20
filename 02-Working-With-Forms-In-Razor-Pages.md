@@ -2,7 +2,7 @@
 
 Code: ``Sandbox\Razor\MovieApp``
 
-**Note:** in these ode example we are not going to use ``scaffolding`` to build our pages. All the HTML and code will be added manually.
+**Note:** in these code examples we are not going to use ``scaffolding`` to build our pages. All the HTML and code will be added manually.
 
 ## One way data binding
 
@@ -268,7 +268,7 @@ We have added ``name`` values to each field. These relate to our properties in t
 
 ```html
     <form method="post">
-        ```
+```
 
 Go back to the ``PageModel`` and we need to add an ``OnPost()`` method to receive a request.
 
@@ -285,7 +285,7 @@ Add a break point on the ``return Page();`` statement and debug the code.
 
 When we hit the return page statement we hover over the ``value`` variable and we see that there is no data present.
 
-The reason is that when we use this method we can only send data to the view. If we want these properties to be bi-directional we have to use **binding**.
+The reason is that when we use this method we can only send data to the view. If we want these properties to be **bi-directional** we have to use **binding**.
 
 To do this we have to use a decorator named ``BindProperty`` on each of our fields.
 
@@ -340,7 +340,7 @@ Add a page handler to the AddMovie Razor page. This allows us to bind on user ev
     <a asp-page-handler="MyOnClick"> Click me</a>
 
     <div class="row">
-        ```
+```
 
 On the PageModel add a new method.
 
