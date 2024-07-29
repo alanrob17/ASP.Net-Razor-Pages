@@ -42,6 +42,12 @@ blockquote {
     padding-left: 1rem;
     page-break-inside: avoid;
 }
+:target:before {
+  content: "";
+  display: block;
+  height: 80px; /* adjust this value to your needs */
+  margin: -80px 0 0; /* this should be a negative value of the height above */
+}
 </style>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 </head>
